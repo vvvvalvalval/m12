@@ -1,0 +1,7 @@
+# Created by .ignore support plugin (hsz.mobi)
+
+/resources/public/js/compiled
+target
+.idea
+*.iml
+*.log
