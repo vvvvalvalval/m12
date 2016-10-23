@@ -4,7 +4,9 @@
     [sablono.core :as sab :include-macros true]
 
     [rum.core :as rum]
-    [m12.synth :as synth])
+    [m12.services.synth :as synth]
+
+    [m12.widgets.notation])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))

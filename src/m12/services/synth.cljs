@@ -1,4 +1,8 @@
-(ns m12.synth)
+(ns m12.services.synth
+  "Integration with the AudioSynth library.")
+
+;; ------------------------------------------------------------------------
+;; AudioSynth
 
 (defn as-play
   [sound note octave duration]
@@ -12,6 +16,9 @@
 (defn as-octave
   [height]
   (-> height (quot 12)))
+
+;; ------------------------------------------------------------------------
+;; API
 
 (defn play-note
   [{:as note, :keys [sound height duration]}]
