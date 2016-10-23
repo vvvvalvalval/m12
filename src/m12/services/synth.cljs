@@ -1,11 +1,14 @@
 (ns m12.services.synth
-  "Integration with the AudioSynth library.")
+  "Integration with the AudioSynth library.
+
+  NOTE: no volume control.")
 
 ;; ------------------------------------------------------------------------
 ;; AudioSynth
 
 (defn as-play
   [sound note octave duration]
+  ;; TODO externs (Val, 23 Oct 2016)
   (.play (aget js/window "Synth") sound note octave duration))
 
 (defn as-note

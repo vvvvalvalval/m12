@@ -16,7 +16,7 @@
    [:thead
     (into
       [:tr
-       [:th "M12"]
+       [:th "M12 notation"]
        [:th "Solfege notation"]
        [:th "English notation"]
        ]
