@@ -2,7 +2,8 @@
   (:require [rum.core :as rum]
 
             [m12.services.synth :as synth]
-            )
+            [m12.lib.math :as math]
+            [clojure.string :as str])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -54,3 +55,35 @@
       @a #(reset! a %)
       options)
     ))
+
+(defc <note> [n]
+  [:span (math/stringify-note n)])
+
+
+(defcs note-input
+  < (let [cb (fn [state]
+               (let [[props {:keys [on-mounted!]
+                             :or {on-mounted! #(do nil)}}] (:rum/args state)]
+                 (on-mounted! (rum/dom-node state))
+                 state))]
+      {:did-mount cb :did-update cb})
+  [state props {:as opts :keys [on-new-value! on-clear! on-mounted!]
+          :or {on-clear! #(do nil)}}]
+  [:input (assoc props
+            :type "text"
+            :on-change (fn [e]
+                         (let [new-val (-> e .-target .-value)]
+                           (cond
+                             (str/blank? new-val)
+                             (on-clear!)
+
+                             (not (math/valid-note? new-val))
+                             (do
+                               (on-clear!)) ;; TODO show validation error (Val, 23 Oct 2016)
+
+                             :else
+                             (let [answer (math/parse-note new-val)]
+                               (on-new-value! answer))
+                             ))
+                         :done))
+   ])

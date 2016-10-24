@@ -4,7 +4,10 @@
     [sablono.core :as sab :include-macros true]
     [rum.core :as rum]
 
-    [m12.widgets.notation])
+    [m12.widgets.notation]
+    [m12.widgets.arithmetic]
+    [m12.widgets.guitar]
+    )
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -22,9 +25,4 @@
     (.render js/ReactDOM (sab/html [:div "This is SO working"]) node)))
 
 (main)
-
-
-
-;; remember to run lein figwheel and then browse to
-;; http://localhost:3449/cards.html
 

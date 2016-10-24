@@ -63,6 +63,11 @@
 (defn stringify-note [n]
   (to-base-12 n))
 
+(defn valid-note?
+  "Validates note input"
+  [n-s]
+  (some? (re-matches #"\s*[0-9abAB]+\s*" n-s)))
+
 (defn parse-note
   [n-s]
    (-> n-s from-base-12 (mod 12)))
