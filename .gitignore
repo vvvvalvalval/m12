@@ -1,6 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 
 /resources/public/js/compiled
+/resources/public/css/compiled
 target
 .idea
 *.iml

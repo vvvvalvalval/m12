@@ -1,0 +1,58 @@
+.gtr-fretboard {
+  position: relative;
+  border: 1px black solid;
+}
+
+.gtr-fretboard-row {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+}
+
+.gtr-fretboard-cell {
+  background-color: transparent;
+  border-left: 1px black solid;
+  border-right: 1px black solid;
+  position: relative;
+  z-index: 10;
+  display: inline-block;
+
+  &.gtr-fretboard-cell--leftmost {
+    border-top: 1px black solid;
+
+    border-right: 3px black solid;
+  }
+
+}
+
+.gtr-round-wrapper {
+  position: absolute;
+}
+
+.gtr-round {
+  background-color : black;
+  position: absolute;
+  border-radius: 100px;
+  top: -45%;
+  left: -50%;
+}
+
+.gtr-string {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  height: 0;
+  border-bottom: 1px grey solid;
+}
+
+.gtr-fretboard-cell-content {
+  position: absolute;
+  top: 0; bottom: 0; left: 0; right: 0;
+}
+
+.gtr-cell-blue-on-hover {
+  &:hover {
+      background-color: fade(blue, 10%);
+    }
+}
