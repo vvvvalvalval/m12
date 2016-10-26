@@ -3,7 +3,9 @@
 
             [m12.services.synth :as synth]
             [m12.lib.math :as math]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [m12.utils :as u]
+            [m12.utils.dom :as dom])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -45,7 +47,7 @@
       (option-text o)])])
 
 (defcard select-example
-  (let [a (atom 7)
+  (let [a (u/rlatom ::select-ex (constantly 7))
         options (vec (range 24))]
     (select {:class "form-control"}
       {::to-value #(.toString % 2)
@@ -87,3 +89,45 @@
                              ))
                          :done))
    ])
+
+(defc <height>
+  < rum/static
+  [h]
+  (let [s (math/stringify-height h)]
+    [:span.m12-h
+     [:span.m12-h1 (nth s 0)]
+     [:span.m12-h0 (nth s 1)]]
+    ))
+
+(def focus-when-updated
+  (let [cb (fn [state]
+             (dom/focus (rum/dom-node state))
+             state)]
+    {:did-mount cb :did-update cb}))
+
+(defc <next-btn> < focus-when-updated rum/static
+  [props cb]
+  [:button.btn.btn-default
+   (assoc props
+     :on-click #(cb)
+     :on-key-press #(when (-> % .-charCode (= 13))
+                     (cb)))
+   "Next"])
+
+(defc <note-picker> < rum/static
+  [props {:keys [f-note-props]
+          :or {f-note-props identity}} choose-note!]
+  [:div props
+   [:span.btn-group
+    (->> math/all-notes
+      (map-indexed
+        (fn [i n1]
+          [:button.btn.btn-default
+           (f-note-props
+             {:key (str "note-btn-" n1)
+              :on-click #(choose-note! n1)})
+           (math/stringify-note n1)])))]])
+
+(defc <debug>
+  [v]
+  [:div [:pre (pr-str v)]])

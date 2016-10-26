@@ -7,8 +7,11 @@ Currently uses [AudioSynth](https://github.com/keithwhor/audiosynth) for playing
 
 ## TODO
 
-* LESS instead of CSS, allow for putting style files in src/
+* ~~LESS instead of CSS, allow for putting style files in src/~~
+* gulp for building less, example https://www.npmjs.com/package/gulp-livereload, more doc here https://www.npmjs.com/package/gulp-less
 * Netlify deploy
+* experiment with IFn to make partial fns with = semantics
+* welcome page - explain experiment
 
 ## Caveats
 

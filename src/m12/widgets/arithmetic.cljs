@@ -5,7 +5,8 @@
             [m12.services.synth :as synth]
             [m12.lib.math :as math]
             [m12.widgets.ui-toolkit :as utk]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [m12.utils :as u])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -78,16 +79,15 @@
   {:n (rand-nth math/all-notes)
    :answered nil})
 
-(defcs <find-complement>
-  < (rum/local (fc-init) ::state)
+(defc <find-complement>
+  < rum/reactive
   [state]
-  (let [a (::state state)
-        {:keys [n answered]} @a
-        next! #(reset! a (fc-init))
+  (let [{:keys [n answered]} (rum/react state)
+        next! #(reset! state (fc-init))
         correct? (and answered (= answered (math/-n n)))
-        submit! #(swap! a assoc :answered %)]
+        submit! #(swap! state assoc :answered %)]
     [:div.text-center
-     [:p "Find the complement of the given interval note."]
+     [:p "Find the complement of the given interval note:"]
      [:div
       (utk/<note> n)
       (span-margin "= - ?")
@@ -107,7 +107,7 @@
       ]]))
 
 (defcard <find-complement>
-  (<find-complement>))
+  (<find-complement> (u/rlatom ::fc1 fc-init)))
 
 ;; ------------------------------------------------------------------------
 ;; tables
@@ -143,3 +143,53 @@
 
 (defcard <op-tables>
   (<op-tables>))
+
+;; ------------------------------------------------------------------------------
+;; Add interval
+
+(def add-interval-intervals
+  (vec (reverse (range -11 12))))
+
+(defc <add-interval-view>
+  [+int reset+int! na
+   choose! answered correct? next!]
+  [:div {}
+   (utk/select {:class "pull-right"}
+     {::utk/from-value (fn [s] (js/parseInt s))
+      ::utk/option-text (fn [v]
+                          (str (if (< v 0) "-" "+")
+                            (math/stringify-note (.abs js/Math v))))}
+     +int reset+int!
+     add-interval-intervals)
+   [:div.text-center
+    [:strong (utk/<note> na)]
+    (span-margin (if (< +int 0) "-" "+"))
+    (utk/<note> (.abs js/Math +int)) (span-margin "=") [:strong (span-margin "?")]
+    (utk/<note-picker> {:class "text-center"} {} choose!)
+    (cond
+      correct?
+      [:div [:em "Correct!"] (utk/<next-btn> {:class "pull-right"} next!)]
+      answered
+      [:div [:em "Wrong!"]])
+    ]
+   ])
+
+(defc <add-interval> < rum/reactive
+  [state]
+  (let [{:as st :keys [na +int answered]} (rum/react state)]
+    (<add-interval-view>
+      +int #(swap! state assoc :+int %) na
+      #(do
+        (.log js/console "%" %)
+        (swap! state assoc :answered %)) answered
+      (= answered (math/+n na +int))
+      (fn []
+        (let [na (rand-nth math/all-notes)]
+          (swap! state #(-> % (dissoc :answered)
+                         (assoc :na na :nc (math/+n na +int)))))))
+
+    ))
+
+(defcard <add-interval>-ex
+  (<add-interval> (u/rlatom ::ai1 (constantly {:na 3 :+int 7 :answered nil}))))
+

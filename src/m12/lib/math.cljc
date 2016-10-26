@@ -2,6 +2,7 @@
   "Current notation is to write a height as an integer in base 12."
   (:require [clojure.string :as str]))
 
+;; TODO
 
 (defn from-base-12
   "parses an int in base 12"

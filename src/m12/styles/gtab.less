@@ -1,0 +1,43 @@
+@import "ui-toolkit";
+
+.gtab-bg-color(@color){
+  background-color: @color;
+  .gtab-item {
+    background-color: @color;
+  }
+}
+
+.gtab {
+  .gtab-bg-color(white);
+}
+
+@string-height: 18px;
+@tab-measure-padding: 24px;
+
+.gtab-string {
+  height: @string-height;
+  border-bottom: 1px black solid;
+  margin: 0;
+  padding: 0 @tab-measure-padding;
+  position: relative;
+}
+
+.gtab-string-inner {
+  height: @string-height;
+  position: relative;
+}
+
+.gtab-item {
+  position: absolute;
+  height: @string-height;
+  bottom: (-@string-height / 2) + 1px;
+}
+
+.gtab-note {
+  font-size: 12px;
+  padding: 3px;
+}
+
+.gtab-string-height {
+  left: -20px;
+}

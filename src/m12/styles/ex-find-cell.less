@@ -1,0 +1,29 @@
+@import "guitar";
+
+.find-cell-fretboard {
+  margin-top: 20px;
+}
+
+.find-cell-top-cell-number {
+  @size: 12px;
+  position: absolute;
+  top: -(@size + 3px);
+  font-style: italic;
+  font-size: @size;
+}
+
+.find-cell-row--selected {
+  .gtr-row-colored(blue);
+}
+
+.find-cell-cell {
+  cursor: pointer;
+}
+
+.find-cell-cell--wrong {
+  .gtr-cell-color(red);
+}
+
+.find-cell-cell--right {
+  .gtr-cell-color(green);
+}

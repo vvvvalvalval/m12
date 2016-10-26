@@ -7,6 +7,7 @@
     [m12.widgets.notation]
     [m12.widgets.arithmetic]
     [m12.widgets.guitar]
+    [m12.widgets.gtab]
     )
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]

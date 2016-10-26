@@ -1,3 +1,7 @@
+@import "guitar";
+
+@guitar-cell-height: 25px;
+
 .gtr-fretboard {
   position: relative;
   border: 1px black solid;
@@ -8,6 +12,7 @@
   margin: 0;
   padding: 0;
   background-color: transparent;
+  height: @guitar-cell-height;
 }
 
 .gtr-fretboard-cell {
@@ -17,6 +22,7 @@
   position: relative;
   z-index: 10;
   display: inline-block;
+  height: @guitar-cell-height;
 
   &.gtr-fretboard-cell--leftmost {
     border-top: 1px black solid;
@@ -51,8 +57,40 @@
   top: 0; bottom: 0; left: 0; right: 0;
 }
 
+
+.gtr-cell-color(@color) {
+  background-color: fade(@color, 10%);
+}
+
 .gtr-cell-blue-on-hover {
   &:hover {
-      background-color: fade(blue, 10%);
+    .gtr-cell-color(blue);
+  }
+}
+
+.gtr-cell-fret-text {
+  font-size: 14px;
+  position: absolute;
+  right: 2px;
+  text-align: right;
+  top: 10%;
+}
+
+.guitar-map-cell {
+  .guitar-map-fret-text {
+    color: fade(black, 50%);
+  }
+
+  &.guitar-map-cell--selected {
+    .guitar-map-fret-text {
+      color: darkgreen;
+      font-weight: bolder;
     }
+
+    .gtr-cell-color(green);
+  }
+}
+
+.gtr-row-colored(@color) {
+  background-color: fade(@color, 10%);
 }
