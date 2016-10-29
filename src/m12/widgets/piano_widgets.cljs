@@ -93,8 +93,8 @@
             " ")
           ])]]
      (piano/<piano-keyboard> {}
-       {:min-h (math/parse-height "30")
-        :max-h (math/parse-height "4b")
+       {:min-h (math/parse-height "40")
+        :max-h (math/parse-height "5b")
         :key-props-fn
         (partial psc-key-props-fn state played)
         :key-content

@@ -7,11 +7,17 @@ Currently uses [AudioSynth](https://github.com/keithwhor/audiosynth) for playing
 
 ## Dev workflow
 
+### Setup
+
 You need Leiningen, Npm and Gulp installed.
 
 Installing dependencies:
 
 `$ lein deps && npm install`
+
+Making files executable
+
+`$ chmod +x *.sh`
 
 ### Running the dev environment
 
@@ -30,16 +36,13 @@ Everything else:
 $ gulp dev
 ```
 
-### Building for production
+### Deploying to production
 
 ```
-$ lein cljsbuild once prod
-$ gulp less-dev
+$ ./deploy.sh
 ```
 
 ## TODO
 
-* Netlify deploy
-* experiment with IFn to make partial fns with = semantics
 * welcome page - explain experiment
 * in production: minify CSS

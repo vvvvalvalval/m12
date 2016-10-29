@@ -13,7 +13,7 @@
     [devcards.core :as dc :refer [defcard deftest]]))
 
 (defn figure [title body]
-  [:div.panel.panel-default
+  [:div.panel.panel-default.m12-max-width
    [:div.panel-heading [:h5 title]]
    [:div.panel-body body]])
 
