@@ -14,7 +14,7 @@ gulp.task('less-dev', function() {
 
 gulp.task('styles-dev', function(){
   gulp.start('less-dev');
-  gulp.watch('./src/m12/**/*.less', ['less']);
+  gulp.watch('./src/m12/**/*.less', ['less-dev']);
 })
 
 gulp.task('dev', function(){
