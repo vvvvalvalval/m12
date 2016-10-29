@@ -3,6 +3,10 @@
 /resources/public/js/compiled
 /resources/public/css/compiled
 target
+node_modules
+
 .idea
 *.iml
+.lein-repl-history
+.nrepl-port
 *.log
