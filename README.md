@@ -5,7 +5,15 @@ Adapted to use the Figwheel REPL in combination with the Cursive IDE.
 
 Currently uses [AudioSynth](https://github.com/keithwhor/audiosynth) for playing music in the browser.
 
-## Running the dev environment
+## Dev workflow
+
+You need Leiningen, Npm and Gulp installed.
+
+Installing dependencies:
+
+`$ lein deps && npm install`
+
+### Running the dev environment
 
 Figwheel REPL: if you're using Cursive, see [here](https://github.com/bhauman/lein-figwheel/wiki/Running-figwheel-in-a-Cursive-Clojure-REPL).
  Otherwise, in the command line: 
@@ -19,7 +27,14 @@ user => (load-file "./scripts/cursive/figwheel-repl.clj")
 Everything else:
  
 ```
-gulp dev
+$ gulp dev
+```
+
+### Building for production
+
+```
+$ lein cljsbuild once prod
+$ gulp less-dev
 ```
 
 ## TODO
@@ -27,3 +42,4 @@ gulp dev
 * Netlify deploy
 * experiment with IFn to make partial fns with = semantics
 * welcome page - explain experiment
+* in production: minify CSS
