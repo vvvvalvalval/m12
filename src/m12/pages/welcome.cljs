@@ -78,7 +78,7 @@
   []
   [:div.container
    [:h1.text-center "M12"]
-   [:div {:style {:margin "40px auto"
+   [:div {:style {:margin    "40px auto"
                   :max-width "600px"}}
     (m12.widgets.piano-widgets/<piano-scale-comparison>
       {} (u/rlatom ::psc m12.widgets.piano-widgets/psc-init))]
@@ -104,7 +104,7 @@
    [:p "For instance, all the Cs end with a " [:strong "0"] ":"]
    [:div
     (<octaves-compare-table> (->> (str/split "20 30 40 50 60" #"\s+")
-                               (map math/parse-height)))]
+                                  (map math/parse-height)))]
 
    [:p "Likewise, all the Es end with a " [:strong "4"] ":"]
    [:div
@@ -112,12 +112,72 @@
                                (map math/parse-height)))]
    ;; TODO representation of a couple octaves on the piano, with an option to switch the notation.
 
-  #_[:div
-   [:h2 "Why a new notation?"]
+   #_[:div
+      [:h2 "Why a new notation?"
+       ;; TODO
+       ;; what makes a good notation:
+       ;; 1) concision 2) practical 3) makes the important obvious 4) creates the right mental model via appropriate representations / abstractions.
+       ;; current notation: uselessly (IMHO) centered around one scale instead of making the deep symmetries of music apparent
+       ;;
+       ;; The history of other fields show that the notation has a crucial impact on the reach of our thought.
+       ;; (examples: Arab vs Roman numbers, math equations, programming languages)
+       ;;
+       ;; So what *is* important when interpreting music notations? Boils down to a few questions:
+       ;; 1. Given a note, where does it fit on the scale ?
+       ;; 2. Given a set of notes (a chord, a scale, a musical phrase...), what are the intervals by which these notes are related ?
+       ;; 3. Given a base note, what is the note that is at some interval of this note ?
+       ;;
+       ;; Some notations are especially bad at this. For example, a guitar tab doesn't help you answer question 1 at all.
+       ;;
+       ;; But once you represent notes and intervals as numbers, you realize that answering those questions translates to very basic
+       ;; mental caculations, like addition and subtraction. Here are some examples:
+       ;; TODO Table english formulation vs number formulation.
+       ;; This is where the notation can help you: by using a few mental caculation tricks, you can build a mental map of music
+       ;; much faster than if you just learned by heart the intervals between every pair of notes. Cf the "counting with notes" section below.
+       ]
 
-   ]
+      ]
 
-  [:div
-   [:h2 "The math of music"]]
+   [:div
+    [:h2 "Counting with notes"]
+    ;; Example of notes and intervals additions and subtractions.
+    ;; Can click on a button to play (interval as superposition of notes).
+    ;; it doesn't make sense to add 2 notes. It does make sense to add two intervals.
+
+    [:h3 "Scale notes"
+     ;; explanation: in many respects, notes that are exactly one our several octaves (12 half-tones) apart
+     ;; can be considered the same, e.g a Sol4 is considered the same as a Sol5, and we just call it a 'Sol'.
+     ;; In M12 notation, instead of writing it 47 or 57, we just write it 7.
+     ;; Likewise, an interval of 3 half-tones is considered the same as an interval of 15 half-tones or an interval of
+     ;; -9 half-tones, and we call it a 'minor 3rd'. In M12 notation, we write it 3.
+     ;;
+     ;; From this simplified view, the set of all notes (and intervals) forms a cycle.
+     ;; We call the 12 notes in this cycle the *scale notes*.
+     ;;
+     ;; TODO cycle representation of scale notes.
+     ;;
+     ;; Once you have learned how to add and subtract scale notes, it's very easy to add and subtract notes and intervals.
+     ;; So we'll start by practicing that.
+
+     ;; TODO examples of scale notes addition and subtraction.
+     ;; hover / (?) button to show this on a cycle representation.
+
+     ;; If you have a good memory, you can simply write the addition and subtraction tables
+     ;; for all 12 scale notes and learn them by heart. They are given below:
+     ;; TODO: scale notes addition and subtraction tables
+     ;;
+     ;; TODO addition widget
+
+     ;;
+     ;; TODO find the complement
+     ;;
+
+     ;; TODO strong and weak points
+     ]
+
+    ]
+
+   [:div
+    [:h2 "For guitarists"]]
 
    ])
