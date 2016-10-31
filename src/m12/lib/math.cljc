@@ -52,4 +52,42 @@
   (-> (apply - notes) (mod 12)))
 
 ;; ------------------------------------------------------------------------
-;; Note Conversions
+;; Scale notes sets
+
+(defn- add-sn-set-to
+  [fnote intervals]
+  (into #{} (map #(+n fnote %)) intervals))
+
+(defn major-chord-notes
+  [fnote]
+  (add-sn-set-to fnote [0 4 7]))
+
+(defn minor-chord-notes
+  [fnote]
+  (add-sn-set-to fnote [0 3 7]))
+
+(defn major-scale-notes
+  [fnote]
+  (add-sn-set-to fnote [0 2 4 5 7 9 11]))
+
+(defn harmonic-scale-notes
+  [fnote]
+  (add-sn-set-to fnote [0 2 4 5 7 8 11]))
+
+(defn double-harmonic-scale-notes
+  [fnote]
+  (add-sn-set-to fnote [0 1 4 5 7 8 11]))
+
+(defn mode-notes [fnote mode-name]
+  (major-scale-notes
+    (-n
+      fnote
+      (case mode-name
+        :ionian 0
+        :dorian 2
+        :phrygian 4
+        :lydian 5
+        :mixolydian 7
+        :aeolian 9
+        :locrian 11))))
+
