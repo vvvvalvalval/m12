@@ -123,16 +123,22 @@
 (defc <note-picker> < rum/static
   [props {:keys [f-note-props]
           :or {f-note-props identity}} choose-note!]
-  [:div props
-   [:span.btn-group
-    (->> math/all-notes
-      (map-indexed
-        (fn [i n1]
-          [:button.btn.btn-default
-           (f-note-props
-             {:key (str "note-btn-" n1)
-              :on-click #(choose-note! n1)})
-           (repr/stringify-note n1)])))]])
+  [:div (-> props
+          (dom/add-classes
+            "scale-note-picker" "text-center"))
+   (->> math/all-notes (partition 6)
+     (map-indexed
+       (fn [i notes]
+         [:div {:key (str i)}
+          [:span.btn-group
+           (->> notes
+             (map-indexed
+               (fn [i n1]
+                 [:button.btn.btn-default
+                  (f-note-props
+                    {:key (str "note-btn-" n1)
+                     :on-click #(choose-note! n1)})
+                  (repr/stringify-note n1)])))]])))])
 
 (defc <debug>
   [v]

@@ -11,7 +11,8 @@
             [m12.widgets.piano-widgets]
             [m12.widgets.posts :as wp]
             [m12.widgets.scale-cycle :as scyc]
-            [m12.widgets.scale-cycle.notes-sets])
+            [m12.widgets.scale-cycle.notes-sets]
+            [m12.widgets.arithmetic])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -105,6 +106,9 @@
       [:i "(click to play)"]]
      ]))
 
+(defn non-repeating [next-problem]
+  (fn [problem]
+    (->> problem (iterate next-problem) (remove #{problem}) first)))
 
 (defc <welcome>
   []
@@ -280,6 +284,61 @@
     ;; TODO: scale notes addition and subtraction tables
     ;;
     ;; TODO addition widget
+    (figure "Ex S1: General addition of scale notes"
+      (m12.widgets.arithmetic/<add-scale-notes-game> {}
+        (u/rlatom ::sn1 (constantly (m12.widgets.arithmetic/add-scale-notes-init 2 :+ 2)))
+        (non-repeating
+          (fn [pb]
+            {:na (rand-nth math/all-notes)
+             :op (rand-nth [:+ :-])
+             :nb (rand-nth math/all-notes)}))))
+
+    (figure "Ex S2: Find the complement"
+      (m12.widgets.arithmetic/<add-scale-notes-game> {}
+        (u/rlatom ::sn2 (constantly (m12.widgets.arithmetic/add-scale-notes-init 0 :- 2)))
+        (non-repeating
+          (fn [pb]
+            {:na 0
+             :op :-
+             :nb (rand-nth math/all-notes)}))))
+
+    (figure "Ex S3: the cycle of 4s"
+      [:div.text-center
+       (scyc/scale-cycle {}
+         {:width 200
+          :f-note-props (fn [props note _]
+                          (assoc props :fill
+                            (case (mod note 4)
+                              0 "#B2FF59"
+                              1 "#69F0AE"
+                              2 "#64FFDA"
+                              3 "#18FFFF")))})
+
+       (m12.widgets.arithmetic/<add-scale-notes-game> {}
+         (u/rlatom ::sn3 (constantly (m12.widgets.arithmetic/add-scale-notes-init 4 :+ 4)))
+         (non-repeating
+           (fn [pb]
+             {:na (rand-nth math/all-notes)
+              :op (rand-nth [:+ :-])
+              :nb (rand-nth [4 8])})))])
+
+    (figure "Ex S4 the cycle of 3s"
+      [:div.text-center
+       (scyc/scale-cycle {}
+         {:width 200
+          :f-note-props (fn [props note _]
+                          (assoc props :fill
+                            (case (mod note 3)
+                              0 "#FFFF00"
+                              1 "#FFD740"
+                              2 "#FFCC80")))})
+       (m12.widgets.arithmetic/<add-scale-notes-game> {}
+         (u/rlatom ::sn4 (constantly (m12.widgets.arithmetic/add-scale-notes-init 2 :+ 3)))
+         (non-repeating
+           (fn [pb]
+             {:na (rand-nth math/all-notes)
+              :op (rand-nth [:+ :-])
+              :nb (rand-nth [3 6 9])})))])
 
     ;;
     ;; TODO find the complement

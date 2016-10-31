@@ -163,10 +163,12 @@
          (span-margin (case op :+ "+" :- "-"))
          (utk/<note> nb)])
       [(span-margin "=") [:strong (span-margin "?")]
+       [:br]
        (utk/<note-picker> {:class "text-center"} {} choose!)
+       [:br]
        (cond
          correct?
-         [:div [:em "Correct!"] (utk/<next-btn> {:class "pull-right"} next!)]
+         [:div [:em.m12-text-spaced "Correct!"] (utk/<next-btn> {:class "m12-text-spaced"} next!)]
          answered
          [:div [:em "Wrong!"]])])))
 
