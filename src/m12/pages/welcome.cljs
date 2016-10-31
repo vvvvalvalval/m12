@@ -341,7 +341,7 @@
       (<scale-notes-sets-browser> (u/rlatom ::scsb scale-notes-sets-browser-init)))
 
     [:p "For instance, you can see that all major chords form the same pattern with various rotations.
-    Minor chords form a different pattern."]
+    Minor chords form a different pattern. In musical terms, a 'transposition' translates to a rotation."]
 
     [:p "Once you have learned how to add and subtract scale notes,
     it becomes very easy to add and subtract notes and intervals.

@@ -10,5 +10,5 @@ node_modules
 .lein-repl-history
 .nrepl-port
 *.log
-.netlify
 /resources/unversioned
+dist/

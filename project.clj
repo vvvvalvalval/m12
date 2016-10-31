@@ -58,7 +58,7 @@
                         :source-paths ["src"]
                         :compiler {:main       "m12.core"
                                    :asset-path "js/compiled/out"
-                                   :output-to  "resources/public/js/compiled/m12.js"
+                                   :output-to  "dist/js/compiled/m12.js"
                                    :optimizations :advanced}}]}
 
   :figwheel { :css-dirs ["resources/public/css"] }

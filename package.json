@@ -10,6 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "gulp": "^3.9.1",
+    "gulp-clean-css": "^2.0.13",
     "gulp-less": "^3.1.0",
     "gulp-sourcemaps": "^2.2.0"
   }

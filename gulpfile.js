@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var less = require('gulp-less');
 var sourcemaps = require('gulp-sourcemaps');
+var cleanCSS = require('gulp-clean-css');
 
 gulp.task('less-dev', function() {
   gulp.src('./src/m12/**/*.main.less')
@@ -21,7 +22,18 @@ gulp.task('dev', function(){
   gulp.start('styles-dev');
 })
 
+gulp.task('less-prod', function() {
+  gulp.src('./src/m12/**/*.main.less')
+    .pipe(sourcemaps.init())
+    .pipe(less({
+      filename: 'm12.css'
+    }))
+    .pipe(cleanCSS({compatibility: 'ie8'}))
+    .pipe(sourcemaps.write('../sourceMaps'))
+    .pipe(gulp.dest('dist/css/compiled'));
+});
+
 gulp.task('build-prod', function(){
   // TODO actual build for prod with minification etc. (Val, 30 Oct 2016)
-  gulp.start('less-dev');
+  gulp.start('less-prod');
 })

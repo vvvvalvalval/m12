@@ -46,3 +46,4 @@ $ ./deploy.sh
 
 * welcome page - explain experiment
 * in production: minify CSS
+* build: separate dist/ folder for production build, thus not interfering.
