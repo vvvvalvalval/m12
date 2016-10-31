@@ -7,7 +7,7 @@
             [m12.services.synth :as synth]
             [m12.lib.math :as math]
             [m12.widgets.ui-toolkit :as utk]
-            )
+            [m12.lib.representations :as repr])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -69,7 +69,7 @@
 (defn standard-guitar-strings
   []
   (->> (str/split "24 29 32 37 3b 44" #" ")
-    reverse (mapv math/parse-height)))
+    reverse (mapv repr/parse-height)))
 
 (defc <fretboard>
   "Renders a guitar fretboard.
@@ -228,7 +228,7 @@
    [:div.gtr-cell-fret-text.guitar-map-fret-text
     {:key "a"}
     (when-not (= j 0)
-      (math/stringify-height h))]
+      (repr/stringify-height h))]
    (<fretboard-column-help> i j)])
 
 (defn gmap-toggle!
@@ -257,11 +257,11 @@
               {:key (str "note-btn-" n1)
                :class (if (get notes n1) "active" "")
                :on-click #(toggle! n1)}
-              (math/stringify-note n1)])))]]]))
+              (repr/stringify-note n1)])))]]]))
 
 (defcard <guitar-map>
   (<guitar-map> {}
-    (u/rlatom ::gm1 #(do {:notes #{(math/parse-note "4")}}))
+    (u/rlatom ::gm1 #(do {:notes #{(repr/parse-note "4")}}))
     {}))
 
 

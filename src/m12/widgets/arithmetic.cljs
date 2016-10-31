@@ -4,6 +4,7 @@
 
             [m12.services.synth :as synth]
             [m12.lib.math :as math]
+            [m12.lib.representations :as repr]
             [m12.widgets.ui-toolkit :as utk]
             [clojure.string :as str]
             [m12.utils :as u])
@@ -96,7 +97,7 @@
          [:button.btn.btn-default
           {:key (str n2)
            :on-click #(submit! n2)}
-          (math/stringify-note n2)])]
+          (repr/stringify-note n2)])]
       (when answered
         [:span
          (if correct?
@@ -123,14 +124,14 @@
       [:td {:style cell-style} [:strong op-name]]
       (for [n math/all-notes]
         [:td {:key (str n) :style cell-style}
-         [:strong (math/stringify-note n)]])]
+         [:strong (repr/stringify-note n)]])]
      (for [m math/all-notes]
        [:tr {:key (str m)}
         [:td {:style cell-style}
-         [:strong (math/stringify-note m)]]
+         [:strong (repr/stringify-note m)]]
         (for [n math/all-notes]
           [:td {:key (str n) :style cell-style}
-           (math/stringify-note (op m n))])])]))
+           (repr/stringify-note (op m n))])])]))
 
 (defc <op-tables> []
   [:div.row
@@ -158,7 +159,7 @@
      {::utk/from-value (fn [s] (js/parseInt s))
       ::utk/option-text (fn [v]
                           (str (if (< v 0) "-" "+")
-                            (math/stringify-note (.abs js/Math v))))}
+                            (repr/stringify-note (.abs js/Math v))))}
      +int reset+int!
      add-interval-intervals)
    [:div.text-center

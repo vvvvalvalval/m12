@@ -4,7 +4,8 @@
             [m12.utils.svg :as svg]
             [rum.core :as rum]
             [m12.lib.math :as math]
-            [m12.services.synth :as synth])
+            [m12.services.synth :as synth]
+            [m12.lib.representations :as repr])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]])
@@ -76,7 +77,7 @@
                 (v- [5 -5]))]
     [:text.scale-cycle-text
      {:x x :y y :key (str "note-text-" i)}
-     (math/stringify-note note)]))
+     (repr/stringify-note note)]))
 
 (def phi
   "The angle (in radians) which determines how curly the cycle looks."
@@ -109,9 +110,12 @@
   (let [r (/ width 2)
         r2 (- r 1)
         center2 [r r]]
-    [:svg (assoc props
-            :x (- (vx center) r) :y (- (vy center) r)
-            :width (+ (vx center) r) :height (+ (vy center) r))
+    [:svg (if center
+            (assoc props
+              :x (- (vx center) r) :y (- (vy center) r)
+              :width (+ (vx center) r) :height (+ (vy center) r))
+            (assoc props
+              :width (* 2 r) :height (* 2 r)))
      [:style style]
      (for [i (range 12)]
        (let [note (i->note i)]
@@ -123,34 +127,50 @@
     ))
 
 ;; IMPROVEMENT have a :note-data optional key in the
-(defcard cycle-ex
-  (scale-cycle {}
-    {:center [100 100] :width 200
-     :style ".cycle-ex-quadrant:hover {fill: orange; cursor: pointer;}
+(defcard various-cycle-sizes
+  (sab/html
+    [:div
+     (for [w [100 160 200 250 300]]
+       [:div {:style {:display "inline-block" :margin "30px"}}
+        (scale-cycle {}
+          {:width w
+           :style "//.cycle-ex-quadrant:hover {fill: orange; cursor: pointer;}
        //.scale-cycle-text {font-weight: bold;}"
-     :f-note-props
-     (let [base-height (math/parse-height "40")]
-       (fn [props note _]
-         (assoc props
-           :class "cycle-ex-quadrant"
-           :on-click #(synth/play
-                       [{:sound "piano" :duration 2
-                         :height (+ base-height note)}]))))}))
+           :f-note-props
+           (let [base-height (repr/parse-height "40")]
+             (fn [props note _]
+               (assoc props
+                 :class "cycle-ex-quadrant scale-cycle-hoverable"
+                 :on-click #(synth/play
+                             [{:sound "piano" :duration 2
+                               :height (+ base-height note)}]))))})])]))
 
-(defcard cycle-notes-set
-  (let [notes-set #{0 4 7}]
-    (scale-cycle {}
-      {:center [100 100] :width 200
-       :style ".note-in-set {fill: chartreuse;}"
-       :note-data (reduce
-                    (fn [m note]
-                      (assoc m note (notes-set note)))
-                    {} math/all-notes)
-       :f-note-props
-       (let [base-height (math/parse-height "40")]
-         (fn [props note in-set?]
-           (cond-> props
-             in-set? (assoc :class "note-in-set"))))})))
+(defn- cns-f-note-props
+  [props note note-data]
+  (cond-> props
+    (:in-set note-data)
+    (update :class #(str % " scale-cycle-quadrant--green"))))
+
+(defc cycle-notes-set
+  < rum/static
+  [props sc-opts notes-set]
+  (scale-cycle props
+    (assoc sc-opts
+      :note-data (->> notes-set
+                   (reduce (fn [m note] (assoc m note {:in-set true})) {}))
+      :f-note-props cns-f-note-props)))
+
+(defcard cycle-notes-set-ex
+  (sab/html
+    [:div.row
+     (for [notes-set [#{0 4 7}
+                      #{}
+                      #{2 5 9}
+                      #{0 2 4 5 7 9 11}]]
+       [:div.col-sm-6.col-lg-3.text-center
+        (cycle-notes-set {:key (str notes-set)}
+          {:width 200} notes-set)
+        [:div [:pre (pr-str notes-set)]]])]))
 
 
 

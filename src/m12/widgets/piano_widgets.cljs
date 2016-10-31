@@ -4,7 +4,8 @@
             [m12.lib.math :as math]
             [m12.widgets.ui-toolkit :as utk]
             [m12.utils :as u]
-            [m12.services.synth :as synth])
+            [m12.services.synth :as synth]
+            [m12.lib.representations :as repr])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -53,10 +54,10 @@
      (utk/<height> h)
      :solfege
      [:span.piano-key-bottom-note
-      (math/stringify-solfege-height h)]
-     :classical
+      (repr/stringify-solfege-height h)]
+     :letter
      [:span.piano-key-bottom-note
-      (math/stringify-classic-height h)]
+      (repr/stringify-letter-height h)]
      )])
 
 (defc <piano-scale-comparison>
@@ -67,8 +68,8 @@
      [:div.text-center {:style {:min-height "60px"}}
       [:span.btn-group
        (for [[nt nt-name] [[:m12 "M12"]
-                           [:solfege "solfege"]
-                           [:classical "classical"]
+                           [:solfege "solfège"]
+                           [:letter "letter"]
                            ]]
          [:button.btn.btn-default
           (cond-> {:key nt-name
@@ -77,7 +78,7 @@
             (= notation nt) (assoc :class "active"))
           nt-name])]
       [:div
-       (for [nt [:m12 :solfege :classical]]
+       (for [nt [:m12 :solfege :letter]]
          [:strong
           {:key (str nt)
            :style {:width "80px"
@@ -87,14 +88,14 @@
               :m12
               (utk/<height> h)
               :solfege
-              (math/stringify-solfege-height h)
-              :classical
-              (math/stringify-classic-height h))
+              (repr/stringify-solfege-height h)
+              :letter
+              (repr/stringify-letter-height h))
             " ")
           ])]]
      (piano/<piano-keyboard> {}
-       {:min-h (math/parse-height "40")
-        :max-h (math/parse-height "5b")
+       {:min-h (repr/parse-height "40")
+        :max-h (repr/parse-height "5b")
         :key-props-fn
         (partial psc-key-props-fn state played)
         :key-content

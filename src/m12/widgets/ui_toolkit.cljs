@@ -3,6 +3,7 @@
 
             [m12.services.synth :as synth]
             [m12.lib.math :as math]
+            [m12.lib.representations :as repr]
             [clojure.string :as str]
             [m12.utils :as u]
             [m12.utils.dom :as dom])
@@ -59,7 +60,7 @@
     ))
 
 (defc <note> [n]
-  [:span (math/stringify-note n)])
+  [:span (repr/stringify-note n)])
 
 
 (defcs note-input
@@ -79,12 +80,12 @@
                              (str/blank? new-val)
                              (on-clear!)
 
-                             (not (math/valid-note? new-val))
+                             (not (repr/valid-note? new-val))
                              (do
                                (on-clear!)) ;; TODO show validation error (Val, 23 Oct 2016)
 
                              :else
-                             (let [answer (math/parse-note new-val)]
+                             (let [answer (repr/parse-note new-val)]
                                (on-new-value! answer))
                              ))
                          :done))
@@ -93,7 +94,7 @@
 (defc <height>
   < rum/static
   [h]
-  (let [s (math/stringify-height h)]
+  (let [s (repr/stringify-height h)]
     [:span.m12-h
      [:span.m12-h1 (nth s 0)]
      [:span.m12-h0 (nth s 1)]]
@@ -126,7 +127,7 @@
            (f-note-props
              {:key (str "note-btn-" n1)
               :on-click #(choose-note! n1)})
-           (math/stringify-note n1)])))]])
+           (repr/stringify-note n1)])))]])
 
 (defc <debug>
   [v]

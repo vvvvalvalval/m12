@@ -3,6 +3,7 @@
 
             [m12.services.synth :as synth]
             [m12.lib.math :as math]
+            [m12.lib.representations :as repr]
             [m12.utils :as u]
             [m12.widgets.guitar :as gtr])
   (:require-macros
@@ -30,28 +31,28 @@
                )))]
         (when-let [h (get string-heights i)]
           [:div.gtab-item.gtab-string-height
-           [:div.gtab-note (math/stringify-height h)]])])]))
+           [:div.gtab-note (repr/stringify-height h)]])])]))
 
 (defcard gtab-smoke-on-the-water
   (<gtab> {} {:length 4}
-    [{::string 3 ::x 0 :height (math/parse-height "32")}
-     {::string 2 ::x 0 :height (math/parse-height "37")}
-     {::string 3 ::x 1 :height (math/parse-height "35")}
-     {::string 2 ::x 1 :height (math/parse-height "3a")}
-     {::string 3 ::x 2 :height (math/parse-height "57")}
-     {::string 2 ::x 2 :height (math/parse-height "40")}]
+    [{::string 3 ::x 0 :height (repr/parse-height "32")}
+     {::string 2 ::x 0 :height (repr/parse-height "37")}
+     {::string 3 ::x 1 :height (repr/parse-height "35")}
+     {::string 2 ::x 1 :height (repr/parse-height "3a")}
+     {::string 3 ::x 2 :height (repr/parse-height "57")}
+     {::string 2 ::x 2 :height (repr/parse-height "40")}]
     (fn [{:keys [height]} _]
-      [:div.gtab-note (math/stringify-note height)])))
+      [:div.gtab-note (repr/stringify-note height)])))
 
 (defcard gtab-seven-nation-army
   (let [a (u/rlatom ::ex (constantly :m12))]
     (<gtab> {} {:length 8 :string-heights (gtr/standard-guitar-strings)}
       (for [[hs x] (partition 2 ["34" 0 "34" 1.5 "37" 2 "34" 2.67 "32" 3.33 "30" 4 "2b" 6])]
-        {::string 4 ::x x :height (math/parse-height hs)})
+        {::string 4 ::x x :height (repr/parse-height hs)})
       (fn [{:keys [height]} i]
         [:div.gtab-note
          (case (rum/react a)
-           :m12 (math/stringify-height height)
+           :m12 (repr/stringify-height height)
            :classic (str (- height (get (gtr/standard-guitar-strings) i))))
          ]
         ))))

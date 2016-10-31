@@ -5,6 +5,7 @@
 
             [m12.services.synth :as synth]
             [m12.lib.math :as math]
+            [m12.lib.representations :as repr]
             [m12.widgets.ui-toolkit :as utk]
             [m12.utils :as u]
             [m12.widgets.piano-widgets])
@@ -25,20 +26,20 @@
       [:table.table.table-bordered.text-center
        [:tbody
         [:tr
-         [:td "Classical notation"]
+         [:td "Letter notation"]
          (for [n displayed-notes]
            [:td {:key (str n)}
-            (math/stringify-classic-note n)])]
+            (repr/stringify-letter-note n)])]
         [:tr
-         [:td "Solfege notation"]
+         [:td "Solfège notation"]
          (for [n displayed-notes]
            [:td {:key (str n)}
-            (math/stringify-solfege-note n)])]
+            (repr/stringify-solfege-note n)])]
         [:tr
          [:td [:strong "M12 notation"]]
          (for [n displayed-notes]
            [:td {:key (str n)}
-            [:strong (math/stringify-note n)]])]]])
+            [:strong (repr/stringify-note n)]])]]])
     ))
 
 (defc <scale-intervals-notations-comparison-table>
@@ -58,7 +59,7 @@
          [:td [:strong "M12 notation"]]
          (for [n displayed-notes]
            [:td {:key (str n)}
-            [:strong [:i (math/stringify-note n)]]])
+            [:strong [:i (repr/stringify-note n)]]])
          [:td {:key "octave"}
           [:strong [:i "10"]]]]]])
     ))
@@ -69,7 +70,7 @@
    [:tbody
     [:tr
      (for [h hs]
-       [:td {:key h} (math/stringify-classic-height h)])]
+       [:td {:key h} (repr/stringify-letter-height h)])]
     [:tr
      (for [h hs]
        [:td {:key h} [:strong (utk/<height> h)]])]]])
@@ -82,8 +83,13 @@
                   :max-width "600px"}}
     (m12.widgets.piano-widgets/<piano-scale-comparison>
       {} (u/rlatom ::psc m12.widgets.piano-widgets/psc-init))]
-   [:p "I am experimenting with a new notation for music.
-   This website is an environment to test it and get familiar with it."]
+   [:p "I am experimenting with a alternative notation for music.
+   This is simply a variant of "
+    [:a {:href "https://en.wikipedia.org/wiki/Musical_notation#Integer_notation"
+         :target "_blank"}
+     "integer notation"]
+    " which uses 12 digits instead of 10.
+    This website is an environment to test it and get familiar with it."]
    [:p "The idea is to simply represent notes and intervals as numbers, like so:"]
    (<scale-notations-comparison-table>)
    [:p "Similarly for intervals:"]
@@ -104,13 +110,12 @@
    [:p "For instance, all the Cs end with a " [:strong "0"] ":"]
    [:div
     (<octaves-compare-table> (->> (str/split "20 30 40 50 60" #"\s+")
-                                  (map math/parse-height)))]
+                                  (map repr/parse-height)))]
 
    [:p "Likewise, all the Es end with a " [:strong "4"] ":"]
    [:div
     (<octaves-compare-table> (->> (str/split "24 34 44 54 64" #"\s+")
-                               (map math/parse-height)))]
-   ;; TODO representation of a couple octaves on the piano, with an option to switch the notation.
+                               (map repr/parse-height)))]
 
    #_[:div
       [:h2 "Why a new notation?"

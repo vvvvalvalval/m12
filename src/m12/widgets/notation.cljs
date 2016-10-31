@@ -5,7 +5,7 @@
             [m12.services.synth :as synth]
             [m12.lib.math :as math]
             [m12.widgets.ui-toolkit :as utk]
-            )
+            [m12.lib.representations :as repr])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -41,9 +41,9 @@
 
 (defc <translation-table-row- [n]
   [:tr
-   [:td (math/stringify-note n)]
-   [:td (math/stringify-solfege-note n)]
-   [:td (math/stringify-classic-note n)]
+   [:td (repr/stringify-note n)]
+   [:td (repr/stringify-solfege-note n)]
+   [:td (repr/stringify-letter-note n)]
    ])
 
 (defcard translations-table
@@ -56,7 +56,7 @@
   <translator>
     <translator-view>)
 
-(defcs <translator> < (rum/local (math/parse-height "39") ::h)
+(defcs <translator> < (rum/local (repr/parse-height "39") ::h)
   [state]
   (<translator-view> @(::h state) #(reset! (::h state) %)))
 
@@ -66,9 +66,9 @@
    (notations-head 1)
    [:tbody
     [:tr
-     (for [[stringify key] [[math/stringify-height "m12"]
-                            [math/stringify-solfege-height "solfege"]
-                            [math/stringify-classic-height "classic"]
+     (for [[stringify key] [[repr/stringify-height "m12"]
+                            [repr/stringify-solfege-height "solfege"]
+                            [repr/stringify-letter-height "classic"]
                             ]]
        [:td {:key key}
         (utk/select {:class "form-control"}

@@ -2,7 +2,8 @@
   (:require [m12.lib.math :as math]
             [sablono.core :as sab]
             [m12.widgets.ui-toolkit :as utk]
-            [rum.core :as rum])
+            [rum.core :as rum]
+            [m12.lib.representations :as repr])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -73,15 +74,15 @@
             [:div
              [:h5 "From " minhs " to " maxhs]
              (<piano-keyboard> {:key (str i)}
-               {:min-h (math/parse-height minhs)
-                :max-h (math/parse-height maxhs)
+               {:min-h (repr/parse-height minhs)
+                :max-h (repr/parse-height maxhs)
                 :key-content (fn [h]
                                [:div.bottom-stretched
                                 {:style {:text-align "center"
                                          :color
                                          (if (white-height? h)
                                            "black" "white")}}
-                                (utk/<height> (math/stringify-height h))])}
+                                (utk/<height> (repr/stringify-height h))])}
                )]))
         (interpose [:br]))
       )
