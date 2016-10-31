@@ -69,7 +69,7 @@
 
 (defc note-text
   < rum/static
-  [theta0 phi center r i]
+  [theta0 phi center r i note-data f-note-text]
   (let [note (i->note i)
         theta (+ theta0 (/ (* (+ i 0.5) 2 g/PI) 12))
         [x y] (-> center
@@ -77,7 +77,7 @@
                 (v- [5 -5]))]
     [:text.scale-cycle-text
      {:x x :y y :key (str "note-text-" i)}
-     (repr/stringify-note note)]))
+     (f-note-text note note-data)]))
 
 (def phi
   "The angle (in radians) which determines how curly the cycle looks."
@@ -99,14 +99,21 @@
 (def default-note-data
   (fn [note] nil))
 
+(def default-note-text
+  (fn [note note-data]
+    (repr/stringify-note note)))
+
 (defc scale-cycle
   < rum/static
-  [props {:keys [center width style
+  [props {:as opts
+          :keys [center width style
                  note-data
-                 f-note-props]
+                 f-note-props
+                 f-note-text]
           :or {style ""
                f-note-props default-f-note-props
-               note-data default-note-data}}]
+               note-data default-note-data
+               f-note-text default-note-text}}]
   (let [r (/ width 2)
         r2 (- r 1)
         center2 [r r]]
@@ -123,7 +130,7 @@
            center2 r2
            i f-note-props (note-data note))))
      (for [i (range 12)]
-       (note-text theta0 phi center2 r2 i))]
+       (note-text theta0 phi center2 r2 i (note-data (i->note i)) f-note-text))]
     ))
 
 ;; IMPROVEMENT have a :note-data optional key in the

@@ -9,7 +9,8 @@
             [m12.widgets.ui-toolkit :as utk]
             [m12.utils :as u]
             [m12.widgets.piano-widgets]
-            [m12.widgets.posts :as wp])
+            [m12.widgets.posts :as wp]
+            [m12.widgets.scale-cycle :as scyc])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -76,11 +77,43 @@
      (for [h hs]
        [:td {:key h} [:strong (utk/<height> h)]])]]])
 
+(def ^:private scale-cycle-into-f-note-props
+  (let [base-height (repr/parse-height "40")]
+    (fn [props note _]
+      (.log js/console "coucou")
+      (assoc props
+        :class "scale-cycle-hoverable"
+        :on-click #(synth/play
+                    [{:sound "piano" :duration 2
+                      :height (+ base-height note)}])))))
+
+(defc <scale-cycle-intro>
+  < rum/static rum/reactive
+  [state]
+  (let [{:keys [notation]} (rum/react state)]
+    [:div.text-center {:style {:padding "20px 0"}}
+     [:div {:style {:margin "10px 0"}}
+      (utk/<notation-selector> {} notation #(swap! state assoc :notation %))]
+     (scyc/scale-cycle {}
+       {:width 200
+        :f-note-props scale-cycle-into-f-note-props
+        :f-note-text (case notation
+                       :m12 repr/stringify-note
+                       :solfege repr/stringify-solfege-note
+                       :letter repr/stringify-letter-note)})
+     [:div
+      [:i "The 12 scale notes"]
+      [:br]
+      [:i "(click to play)"]]
+     ]))
+
+
+
 (defc <welcome>
   []
   [:div.container
    [:h1.text-center "M12"]
-   [:div {:style {:margin    "40px auto"
+   [:div {:style {:margin "40px auto"
                   :max-width "600px"}}
     (m12.widgets.piano-widgets/<piano-scale-comparison>
       {} (u/rlatom ::psc m12.widgets.piano-widgets/psc-init))]
@@ -155,43 +188,47 @@
      like addition and subtraction."]
 
      [:p "Here are some examples:"]
-     [:div.row
-      [:div.col-xs-12.col-md-6
-       [:table.table
-        [:thead
-         [:tr
-          [:th "English formulation"]
-          [:th "M12 formulation"]]]
-        [:tbody
-         [:tr
-          [:td
-           (wp/<clrnote> "La5" 1) "is the" (wp/<clrivl> "5th" 2)
-           "of" (wp/<clrnote> "Re5" 3)]
-          [:td
-           (wp/<equation> [:hs "59" 1] :- [:hs "52" 3] [:is "7" 2])
-           ]]
-         [:tr
-          [:td
-           "The" (wp/<clrivl> "minor 3rd" 5) "of" (wp/<clrnote> "Si3" 4)
-           "is" (wp/<clrnote> "Re3" 6)]
-          [:td
-           (wp/<equation> [:hs "3b" 4] :+ [:is "3" 5] [:hs "42" 6])]]
-         [:tr
-          [:td "{" (wp/<clrnote> "Re3" 1) "," (wp/<clrnote> "Fa#3" 2) "," (wp/<clrnote> "La3" 3) "}"
-           " form a" (wp/<clrivl> "major chord" 5)]
-          [:td
-           [:div (wp/<equation> [:hs "32" 1] :+ [:is "0" 5] [:hs "32" 1])]
-           [:div (wp/<equation> [:hs "32" 1] :+ [:is "4" 5] [:hs "36" 2])]
-           [:div (wp/<equation> [:hs "32" 1] :+ [:is "7" 5] [:hs "39" 3])]
-           ]]
-         [:tr
-          [:td "The" (wp/<clrivl> "5th" 1) "of the" (wp/<clrivl> "5th" 2)
-           "is the" (wp/<clrivl> "major 2nd" 3)]
-          [:td
-           (wp/<equation> [:sns "7" 2] :+ [:sns "7" 1] [:sns "2" 3])]]]]]]
+     (figure "M12 vs English"
+       [:div.row
+        [:div.col-xs-12.col-md-6
+         [:table.table
+          [:thead
+           [:tr
+            [:th "English formulation"]
+            [:th "M12 formulation"]]]
+          [:tbody
+           [:tr
+            [:td
+             (wp/<clrnote> "La5" 1) "is the" (wp/<clrivl> "5th" 2)
+             "of" (wp/<clrnote> "Re5" 3)]
+            [:td
+             (wp/<equation> [:hs "59" 1] :- [:hs "52" 3] [:is "7" 2])
+             ]]
+           [:tr
+            [:td
+             "The" (wp/<clrivl> "minor 3rd" 5) "of" (wp/<clrnote> "Si3" 4)
+             "is" (wp/<clrnote> "Re3" 6)]
+            [:td
+             (wp/<equation> [:hs "3b" 4] :+ [:is "3" 5] [:hs "42" 6])]]
+           [:tr
+            [:td "{" (wp/<clrnote> "Re3" 1) "," (wp/<clrnote> "Fa#3" 2) "," (wp/<clrnote> "La3" 3) "}"
+             " form a" (wp/<clrivl> "major chord" 5)]
+            [:td
+             [:div (wp/<equation> [:hs "32" 1] :+ [:is "0" 5] [:hs "32" 1])]
+             [:div (wp/<equation> [:hs "32" 1] :+ [:is "4" 5] [:hs "36" 2])]
+             [:div (wp/<equation> [:hs "32" 1] :+ [:is "7" 5] [:hs "39" 3])]
+             ]]
+           [:tr
+            [:td "The" (wp/<clrivl> "5th" 1) "of the" (wp/<clrivl> "5th" 2)
+             "is the" (wp/<clrivl> "major 2nd" 3)]
+            [:td
+             (wp/<equation> [:sns "7" 2] :+ [:sns "7" 1] [:sns "2" 3])]]]]]])
 
-     ;; This is where the notation can help you: by using a few mental caculation tricks, you can build a mental map of music
-     ;; much faster than if you just learned by heart the intervals between every pair of notes. Cf the "counting with notes" section below.
+     [:p
+      "This is where the notation can help you:
+      by using a few mental caculation tricks, you can build a mental map of music
+      much faster than if you just learned by heart the intervals between every pair of notes.
+      Cf the \"counting with notes\" section below."]
      ]
 
     ]
@@ -203,36 +240,55 @@
     ;; it doesn't make sense to add 2 notes. It does make sense to add two intervals.
 
     [:h3 "Scale notes"
-     ;; explanation: in many respects, notes that are exactly one our several octaves (12 half-tones) apart
-     ;; can be considered the same, e.g a Sol4 is considered the same as a Sol5, and we just call it a 'Sol'.
-     ;; In M12 notation, instead of writing it 47 or 57, we just write it 7.
-     ;; Likewise, an interval of 3 half-tones is considered the same as an interval of 15 half-tones or an interval of
-     ;; -9 half-tones, and we call it a 'minor 3rd'. In M12 notation, we write it 3.
-     ;;
-     ;; From this simplified view, the set of all notes (and intervals) forms a cycle.
-     ;; We call the 12 notes in this cycle the *scale notes*.
-     ;;
-     ;; TODO cycle representation of scale notes.
-     ;;
-     ;; Once you have learned how to add and subtract scale notes, it's very easy to add and subtract notes and intervals.
-     ;; So we'll start by practicing that.
 
-     ;; TODO examples of scale notes addition and subtraction.
-     ;; hover / (?) button to show this on a cycle representation.
-
-     ;; If you have a good memory, you can simply write the addition and subtraction tables
-     ;; for all 12 scale notes and learn them by heart. They are given below:
-     ;; TODO: scale notes addition and subtraction tables
-     ;;
-     ;; TODO addition widget
-
-     ;;
-     ;; TODO find the complement
-     ;;
-
-     ;; TODO strong and weak points
      ]
+    [:p "In many respects, notes that are exactly one our several octaves (12 semitones) apart
+     can be considered the same, e.g a Sol4 is considered the same as a Sol5, and we just call it a 'Sol'.
+     In M12 notation, instead of writing it " [:strong (utk/<height> (repr/parse-height "47"))] " or "
+     [:strong (utk/<height> (repr/parse-height "57"))] ",
+      we just write it " [:strong (utk/<note> (repr/parse-note "7"))] "."]
 
+    [:p "Likewise, an interval of 3 semitones is considered the same as
+    an interval of 15 semitones or an interval of -9 (i.e going down the scale) semitones,
+     and we call it a 'minor 3rd'. In M12 notation, we write it "
+     [:strong (utk/<note> (repr/parse-note "3"))] "."]
+
+    [:p "From this simplified view, the set of all notes (and intervals) forms a cycle:"]
+
+    (<scale-cycle-intro> (u/rlatom ::scintro (constantly {:notation :m12})))
+
+    [:p "We call the 12 notes in this cycle the " [:strong [:em "scale notes"]] "."]
+
+    [:p "Once you have learned how to add and subtract scale notes,
+    it becomes very easy to add and subtract notes and intervals.
+    So we'll start by practicing that."]
+
+    ;;
+    ;;
+    ;;
+    ;;
+    ;;
+    ;;
+    ;;
+    ;; TODO cycle representation of scale notes.
+    ;;
+    ;;
+    ;;
+
+    ;; TODO examples of scale notes addition and subtraction.
+    ;; hover / (?) button to show this on a cycle representation.
+
+    ;; If you have a good memory, you can simply write the addition and subtraction tables
+    ;; for all 12 scale notes and learn them by heart. They are given below:
+    ;; TODO: scale notes addition and subtraction tables
+    ;;
+    ;; TODO addition widget
+
+    ;;
+    ;; TODO find the complement
+    ;;
+
+    ;; TODO strong and weak points
     ]
 
    [:div

@@ -60,23 +60,15 @@
       (repr/stringify-letter-height h)]
      )])
 
+
+
 (defc <piano-scale-comparison>
   < rum/static rum/reactive
   [props state]
   (let [{:keys [hovered-h notation played]} (rum/react state)]
     [:div
      [:div.text-center {:style {:min-height "60px"}}
-      [:span.btn-group
-       (for [[nt nt-name] [[:m12 "M12"]
-                           [:solfege "solfège"]
-                           [:letter "letter"]
-                           ]]
-         [:button.btn.btn-default
-          (cond-> {:key nt-name
-                   :style {:width "80px"}
-                   :on-click (fn [_] (swap! state assoc :notation nt))}
-            (= notation nt) (assoc :class "active"))
-          nt-name])]
+      (utk/<notation-selector> {} notation #(swap! state assoc :notation %))
       [:div
        (for [nt [:m12 :solfege :letter]]
          [:strong

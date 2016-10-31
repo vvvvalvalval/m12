@@ -137,3 +137,18 @@
 (defc <debug>
   [v]
   [:div [:pre (pr-str v)]])
+
+(defc <notation-selector>
+  < rum/static
+  [props selected-notation select!]
+  [:span.btn-group props
+   (for [[nt nt-name] [[:m12 "M12"]
+                       [:solfege "solfège"]
+                       [:letter "letter"]
+                       ]]
+     [:button.btn.btn-default
+      (cond-> {:key nt-name
+               :style {:width "80px"}
+               :on-click (fn [_] (select! nt))}
+        (= selected-notation nt) (assoc :class "active"))
+      nt-name])])
