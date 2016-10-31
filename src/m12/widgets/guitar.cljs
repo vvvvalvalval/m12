@@ -163,7 +163,7 @@
   [s h answered
    correct? submit! next!]
   [:div
-   [:p "Play " [:strong (utk/<height> h)] " on " [:strong (utk/<height> s)] ":"]
+   [:p.text-center [:i "Play " [:strong (utk/<height> h)] " on " [:strong (utk/<height> s)] ":"]]
     (<fretboard> {:class "find-cell-fretboard"}
      {:string-fn (fn [props i1 s1]
                    (cond-> props

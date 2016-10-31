@@ -12,7 +12,8 @@
             [m12.widgets.posts :as wp]
             [m12.widgets.scale-cycle :as scyc]
             [m12.widgets.scale-cycle.notes-sets]
-            [m12.widgets.arithmetic])
+            [m12.widgets.arithmetic]
+            [m12.widgets.guitar])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -348,6 +349,15 @@
     ]
 
    [:div
-    [:h2 "For guitarists"]]
+    [:h2 "For guitarists"]
+    (figure "M12 guitar map"
+      (m12.widgets.guitar/<guitar-map> {}
+        (u/rlatom ::gm1 (constantly {:notes #{4}}))
+        {}))
+
+    (figure "Ex G1: find where to play"
+      (m12.widgets.guitar/find-cell-exo
+        (u/rlatom ::exG1 m12.widgets.guitar/init-find-cell)))
+    ]
 
    ])
