@@ -10,7 +10,8 @@
             [m12.utils :as u]
             [m12.widgets.piano-widgets]
             [m12.widgets.posts :as wp]
-            [m12.widgets.scale-cycle :as scyc])
+            [m12.widgets.scale-cycle :as scyc]
+            [m12.widgets.scale-cycle.notes-sets])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -86,12 +87,6 @@
                     [{:sound "piano" :duration 2
                       :height (+ base-height note)}])))))
 
-(defn stringifier-for-notation
-  [notation]
-  (case notation
-    :m12 repr/stringify-note
-    :solfege repr/stringify-solfege-note
-    :letter repr/stringify-letter-note))
 
 (defc <scale-cycle-intro>
   < rum/static rum/reactive
@@ -103,85 +98,13 @@
      (scyc/scale-cycle {}
        {:width 200
         :f-note-props scale-cycle-into-f-note-props
-        :f-note-text (stringifier-for-notation notation)})
+        :f-note-text (repr/stringifier-for-notation notation)})
      [:div
       [:i "The 12 scale notes"]
       [:br]
       [:i "(click to play)"]]
      ]))
 
-(defn scale-notes-sets-browser-init []
-  {:notation :m12
-   :fundamental 0
-   :set-type [:chord :major]})
-
-(defn snsb-notes-set
-  [fundatemental set-type]
-  (let [[kind data] set-type]
-    (case kind
-      :chord (case data
-               :major (math/major-chord-notes fundatemental)
-               :minor (math/minor-chord-notes fundatemental))
-      :scale (case data
-               :major (math/major-scale-notes fundatemental)
-               :harmonic-major (math/harmonic-scale-notes fundatemental)
-               :double-harmonic-major (math/double-harmonic-scale-notes fundatemental))
-      :mode (math/mode-notes fundatemental data))))
-
-(def snsb-set-types
-  [["Major chord" [:chord :major]]
-   ["Minor chord" [:chord :minor]]
-   ["Major scale" [:scale :major]]
-   ["Harmonic major scale" [:scale :harmonic-major]]
-   ["Double harmonic major scale" [:scale :double-harmonic-major]]
-   ["Mode: Ionian" [:mode :ionian]]
-   ["Mode: Dorian" [:mode :dorian]]
-   ["Mode: Phrygian" [:mode :phrygian]]
-   ["Mode: Lydian" [:mode :lydian]]
-   ["Mode: Mixolydian" [:mode :mixolydian]]
-   ["Mode: Aeolian" [:mode :aeolian]]
-   ["Mode: Locrian" [:mode :locrian]]
-   ])
-
-(defc <scale-notes-sets-browser>
-  < rum/static rum/reactive
-  [state]
-  (let [{:keys [notation fundamental set-type]} (rum/react state)]
-    [:div.text-center {:style {:padding "20px 0"}}
-     [:div {:style {:margin "10px 0"}}
-      (utk/<notation-selector> {} notation #(swap! state assoc :notation %))]
-     (scyc/cycle-notes-set {}
-       {:width 200
-        :f-note-props scale-cycle-into-f-note-props
-        :f-note-text (case notation
-                       :m12 repr/stringify-note
-                       :solfege repr/stringify-solfege-note
-                       :letter repr/stringify-letter-note)}
-       (snsb-notes-set fundamental set-type))
-     [:form.form-inline
-      [:div.form-group
-       [:label "Tonic note: "]
-       (utk/select {:class "form-control"}
-         {::utk/to-value repr/stringify-note
-          ::utk/from-value repr/parse-note
-          ::utk/option-text (stringifier-for-notation notation)}
-         fundamental
-         #(swap! state assoc :fundamental %)
-         math/all-notes)]
-      [:div.form-group
-       [:label " Pattern: "]
-       (let [opts (vec (map-indexed (fn [i st] [i st]) snsb-set-types))
-             selected (->> opts (filter (fn [[i [text tuple]]] (= tuple set-type))) first)]
-         (utk/select {:class "form-control"}
-           {::utk/to-value (fn [[i st]] (str i))
-            ::utk/from-value (fn [s] (nth opts (js/parseInt s) ))
-            ::utk/option-key first
-            ::utk/option-text (fn [[i [text data]]] text)}
-           selected
-           (fn [[i [_ tuple]]] (swap! state assoc :set-type tuple))
-           opts))]
-      ]
-     ]))
 
 (defc <welcome>
   []
@@ -338,7 +261,8 @@
     (such as chords and scales) as visual patterns, as shown in the figure below:"]
 
     (figure "Exploring the cycle representation"
-      (<scale-notes-sets-browser> (u/rlatom ::scsb scale-notes-sets-browser-init)))
+      (m12.widgets.scale-cycle.notes-sets/<scale-notes-sets-browser>
+        (u/rlatom ::scsb m12.widgets.scale-cycle.notes-sets/scale-notes-sets-browser-init)))
 
     [:p "For instance, you can see that all major chords form the same pattern with various rotations.
     Minor chords form a different pattern. In musical terms, a 'transposition' translates to a rotation."]

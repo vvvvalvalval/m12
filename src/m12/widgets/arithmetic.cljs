@@ -148,49 +148,117 @@
 ;; ------------------------------------------------------------------------------
 ;; Add interval
 
+(defc <add-scale-notes-view>
+  < rum/static
+  [props {:as problem, :keys [na op nb]}
+   answered correct? choose! next!]
+  (into [:div.text-center props]
+    (concat
+      (cond
+        (and (= na 0) (= op :-))
+        [[:strong "-" (utk/<note> nb)]]
+
+        :else
+        [[:strong (utk/<note> na)]
+         (span-margin (case op :+ "+" :- "-"))
+         (utk/<note> nb)])
+      [(span-margin "=") [:strong (span-margin "?")]
+       (utk/<note-picker> {:class "text-center"} {} choose!)
+       (cond
+         correct?
+         [:div [:em "Correct!"] (utk/<next-btn> {:class "pull-right"} next!)]
+         answered
+         [:div [:em "Wrong!"]])])))
+
+(defcard <add-scale-notes-view>-negative
+  (<add-scale-notes-view>
+    {} {:na 0 :op :- :nb 10}
+    nil nil #(do nil) #(do nil)))
+
+
+(defn add-scale-notes-choose!
+  [a answer]
+  (swap! a update :game/state
+    assoc :answered answer))
+
+(defn add-scale-notes-next!
+  [next-problem a]
+  (swap! a (fn [state]
+             (-> state
+               (assoc :game/state {:answered nil})
+               (update :game/problem next-problem)))))
+
+(defc <add-scale-notes-game>
+  < rum/static rum/reactive
+  [props a next-problem]
+  (let [{problem :game/problem
+         game-state :game/state} (rum/react a)
+        {:keys [na op nb]} problem
+
+        solution ((case op :+ math/+n :- math/-n)
+                   na nb)
+        {:keys [answered]} game-state
+        correct? (= answered solution)
+
+        choose! (u/pfn add-scale-notes-choose! a)
+        next! (u/pfn add-scale-notes-next! next-problem a)]
+    (<add-scale-notes-view> props
+      problem answered correct?
+      choose! next!)
+    ))
+
+(defn add-scale-notes-init
+  [na op nb]
+  {:game/problem {:na na :op op :nb nb}
+   :game/state {:answered nil}})
+
+(defcard <add-scale-notes-game>-1
+  "This one is deterministic: Fibonacci-like"
+  (<add-scale-notes-game> {}
+    (u/rlatom ::game1 (constantly (add-scale-notes-init 2 :+ 3)))
+    (fn [{:as old-problem, :keys [na op nb]}]
+      (let [new-op (case op :+ :- :- :+)]
+        {:na nb
+         :op new-op
+         :nb ((case new-op :+ math/+n :- math/-n)
+               na nb)}))
+    ))
+
+;; ------------------------------------------------------------------------------
+;; Add fixed interval
+
 (def add-interval-intervals
   (vec (reverse (range -11 12))))
 
-(defc <add-interval-view>
-  [+int reset+int! na
-   choose! answered correct? next!]
-  [:div {}
-   (utk/select {:class "pull-right"}
-     {::utk/from-value (fn [s] (js/parseInt s))
-      ::utk/option-text (fn [v]
-                          (str (if (< v 0) "-" "+")
-                            (repr/stringify-note (.abs js/Math v))))}
-     +int reset+int!
-     add-interval-intervals)
-   [:div.text-center
-    [:strong (utk/<note> na)]
-    (span-margin (if (< +int 0) "-" "+"))
-    (utk/<note> (.abs js/Math +int)) (span-margin "=") [:strong (span-margin "?")]
-    (utk/<note-picker> {:class "text-center"} {} choose!)
-    (cond
-      correct?
-      [:div [:em "Correct!"] (utk/<next-btn> {:class "pull-right"} next!)]
-      answered
-      [:div [:em "Wrong!"]])
-    ]
-   ])
+(defn add-interval-next-problem
+  [+int problem]
+  {:na (rand-nth math/all-notes)
+   :op (if (< +int 0) :- :+)
+   :nb (.abs js/Math +int)})
 
-(defc <add-interval> < rum/reactive
+(defn add-fixed-interval-reset+int!
+  [state +int]
+  (swap! state assoc :+int +int))
+
+(defc <add-fixed-interval>
+  < rum/reactive
   [state]
-  (let [{:as st :keys [na +int answered]} (rum/react state)]
-    (<add-interval-view>
-      +int #(swap! state assoc :+int %) na
-      #(do
-        (.log js/console "%" %)
-        (swap! state assoc :answered %)) answered
-      (= answered (math/+n na +int))
-      (fn []
-        (let [na (rand-nth math/all-notes)]
-          (swap! state #(-> % (dissoc :answered)
-                         (assoc :na na :nc (math/+n na +int)))))))
+  (let [{:keys [+int]} (rum/react state)]
+    [:div {}
+     (utk/select {:class "pull-right"}
+       {::utk/from-value (fn [s] (js/parseInt s))
+        ::utk/option-text (fn [v]
+                            (str (if (< v 0) "-" "+")
+                              (repr/stringify-note (.abs js/Math v))))}
+       +int (u/pfn add-fixed-interval-reset+int! state)
+       add-interval-intervals)
+     (<add-scale-notes-game> {}
+       state (u/pfn add-interval-next-problem +int))
+     ]))
 
-    ))
-
-(defcard <add-interval>-ex
-  (<add-interval> (u/rlatom ::ai1 (constantly {:na 3 :+int 7 :answered nil}))))
-
+(defcard <add-fixed-interval>-ex
+  (<add-fixed-interval>
+    (u/rlatom ::afi2
+      (constantly {:+int 7
+                   :game/problem {:na 3 :op :+ :nb 7}
+                   :game/state {:answered nil}}))))

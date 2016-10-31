@@ -88,3 +88,9 @@
   (str (stringify-solfege-note (math/note-of-height h))
     (math/octave-of-height h)))
 
+(defn stringifier-for-notation
+  [notation]
+  (case notation
+    :m12 stringify-note
+    :solfege stringify-solfege-note
+    :letter stringify-letter-note))
