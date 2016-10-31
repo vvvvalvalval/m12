@@ -94,11 +94,16 @@
 (defc <height>
   < rum/static
   [h]
-  (let [s (repr/stringify-height h)]
+  (let [s (str/reverse (repr/stringify-height h))]
     [:span.m12-h
-     [:span.m12-h1 (nth s 0)]
-     [:span.m12-h0 (nth s 1)]]
+     [:span.m12-h1 (nth s 1)]
+     [:span.m12-h0 (nth s 0)]]
     ))
+
+(defc <scale-note>
+  < rum/static
+  [n]
+  [:span.m12-sn (repr/stringify-note n)])
 
 (def focus-when-updated
   (let [cb (fn [state]

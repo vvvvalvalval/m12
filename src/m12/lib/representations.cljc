@@ -6,12 +6,18 @@
   [h-s]
   (math/from-base-12 h-s))
 
+(def ph parse-height)
+
 (defn stringify-height
   [h]
   (math/to-base-12 h))
 
+(def sh stringify-height)
+
 (defn stringify-note [n]
   (math/to-base-12 n))
+
+(def sno stringify-note)
 
 (defn valid-note?
   "Validates note input"
@@ -21,6 +27,8 @@
 (defn parse-note
   [n-s]
   (-> n-s math/from-base-12 (mod 12)))
+
+(def pno parse-note)
 
 (def classic-notes
   (vec (str/split "C C# D D# E F F# G G# A A# B" #" ")))

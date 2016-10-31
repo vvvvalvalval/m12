@@ -8,7 +8,8 @@
             [m12.lib.representations :as repr]
             [m12.widgets.ui-toolkit :as utk]
             [m12.utils :as u]
-            [m12.widgets.piano-widgets])
+            [m12.widgets.piano-widgets]
+            [m12.widgets.posts :as wp])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -88,8 +89,8 @@
     [:a {:href "https://en.wikipedia.org/wiki/Musical_notation#Integer_notation"
          :target "_blank"}
      "integer notation"]
-    " which uses 12 digits instead of 10.
-    This website is an environment to test it and get familiar with it."]
+    " which uses 12 digits instead of 10, which is why I'm calling it " [:strong "M12"]
+    ". This website is an environment to test it and get familiar with it."]
    [:p "The idea is to simply represent notes and intervals as numbers, like so:"]
    (<scale-notations-comparison-table>)
    [:p "Similarly for intervals:"]
@@ -117,31 +118,83 @@
     (<octaves-compare-table> (->> (str/split "24 34 44 54 64" #"\s+")
                                (map repr/parse-height)))]
 
-   #_[:div
-      [:h2 "Why a new notation?"
-       ;; TODO
-       ;; what makes a good notation:
-       ;; 1) concision 2) practical 3) makes the important obvious 4) creates the right mental model via appropriate representations / abstractions.
-       ;; current notation: uselessly (IMHO) centered around one scale instead of making the deep symmetries of music apparent
-       ;;
-       ;; The history of other fields show that the notation has a crucial impact on the reach of our thought.
-       ;; (examples: Arab vs Roman numbers, math equations, programming languages)
-       ;;
-       ;; So what *is* important when interpreting music notations? Boils down to a few questions:
-       ;; 1. Given a note, where does it fit on the scale ?
-       ;; 2. Given a set of notes (a chord, a scale, a musical phrase...), what are the intervals by which these notes are related ?
-       ;; 3. Given a base note, what is the note that is at some interval of this note ?
-       ;;
-       ;; Some notations are especially bad at this. For example, a guitar tab doesn't help you answer question 1 at all.
-       ;;
-       ;; But once you represent notes and intervals as numbers, you realize that answering those questions translates to very basic
-       ;; mental caculations, like addition and subtraction. Here are some examples:
-       ;; TODO Table english formulation vs number formulation.
-       ;; This is where the notation can help you: by using a few mental caculation tricks, you can build a mental map of music
-       ;; much faster than if you just learned by heart the intervals between every pair of notes. Cf the "counting with notes" section below.
-       ]
+   [:div
+    ;; TODO
+    [:h2 "Why a new notation?"]
+    [:p "I'm currently a bit dissatisfied with the notations we currently use,
+       espcecially the one - tabs - that guitarists use. I think we can do better."]
 
-      ]
+    [:p "In my view, a good notation for anything has the following qualities:"
+     [:ol
+      [:li "It's concise,"]
+      [:li "It's practical to read and write,"]
+      [:li "It makes the important " [:strong "obvious"] " and hides the irrelevant,"]
+      [:li "By embodying appropriate concepts, it gives us a powerful "
+       [:strong "mental model"] " to what it represents.
+       In other words, it " [:em "helps us think"] " about what it stands for."]]
+
+     ;; The history of other fields show that the notation has a crucial impact on the reach of our thought.
+     ;; (examples: Arab vs Roman numbers, math equations, programming languages)
+     ;;
+     [:p "Therefore we need to ask: what " [:em "is"] " important
+     when interpreting musical notation?
+     In my view, it boils down to a few elementary questions:"
+      [:ol
+       [:li "Given a note, where does it fit on the scale ?"]
+       [:li "Given a set of notes (a chord, a scale, a musical phrase...),
+       what are the intervals by which these notes are related ?"]
+       [:li "Given a base note, what is the note that is at some interval of this note ?"]]]
+
+     [:p "Some notations are especially bad at this.
+     For example, a guitar tab doesn't help you answer question 1 at all.
+     Music sheet makes it easier, but not as easy as possible, because it's irregular.
+     "]
+
+     [:p "Once you represent notes and intervals as " [:em "numbers"] " (like computers do),
+     you realize that answering those questions translates to very basic mental caculations,
+     like addition and subtraction."]
+
+     [:p "Here are some examples:"]
+     [:div.row
+      [:div.col-xs-12.col-md-6
+       [:table.table
+        [:thead
+         [:tr
+          [:th "English formulation"]
+          [:th "M12 formulation"]]]
+        [:tbody
+         [:tr
+          [:td
+           (wp/<clrnote> "La5" 1) "is the" (wp/<clrivl> "5th" 2)
+           "of" (wp/<clrnote> "Re5" 3)]
+          [:td
+           (wp/<equation> [:hs "59" 1] :- [:hs "52" 3] [:is "7" 2])
+           ]]
+         [:tr
+          [:td
+           "The" (wp/<clrivl> "minor 3rd" 5) "of" (wp/<clrnote> "Si3" 4)
+           "is" (wp/<clrnote> "Re3" 6)]
+          [:td
+           (wp/<equation> [:hs "3b" 4] :+ [:is "3" 5] [:hs "42" 6])]]
+         [:tr
+          [:td "{" (wp/<clrnote> "Re3" 1) "," (wp/<clrnote> "Fa#3" 2) "," (wp/<clrnote> "La3" 3) "}"
+           " form a" (wp/<clrivl> "major chord" 5)]
+          [:td
+           [:div (wp/<equation> [:hs "32" 1] :+ [:is "0" 5] [:hs "32" 1])]
+           [:div (wp/<equation> [:hs "32" 1] :+ [:is "4" 5] [:hs "36" 2])]
+           [:div (wp/<equation> [:hs "32" 1] :+ [:is "7" 5] [:hs "39" 3])]
+           ]]
+         [:tr
+          [:td "The" (wp/<clrivl> "5th" 1) "of the" (wp/<clrivl> "5th" 2)
+           "is the" (wp/<clrivl> "major 2nd" 3)]
+          [:td
+           (wp/<equation> [:sns "7" 2] :+ [:sns "7" 1] [:sns "2" 3])]]]]]]
+
+     ;; This is where the notation can help you: by using a few mental caculation tricks, you can build a mental map of music
+     ;; much faster than if you just learned by heart the intervals between every pair of notes. Cf the "counting with notes" section below.
+     ]
+
+    ]
 
    [:div
     [:h2 "Counting with notes"]
