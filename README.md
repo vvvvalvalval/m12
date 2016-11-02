@@ -45,5 +45,5 @@ $ ./deploy.sh
 ## TODO
 
 * welcome page - explain experiment
-* in production: minify CSS
-* build: separate dist/ folder for production build, thus not interfering.
+* abstract out game logic - general component for that. Register exercise.
+* build: cleaning for prod interferes with dev - maybe separate folders.

@@ -323,7 +323,7 @@
               :op (rand-nth [:+ :-])
               :nb (rand-nth [4 8])})))])
 
-    (figure "Ex S4 the cycle of 3s"
+    (figure "Ex S4: the cycle of 3s"
       [:div.text-center
        (scyc/scale-cycle {}
          {:width 200
@@ -341,9 +341,6 @@
               :op (rand-nth [:+ :-])
               :nb (rand-nth [3 6 9])})))])
 
-    ;;
-    ;; TODO find the complement
-    ;;
 
     ;; TODO strong and weak points
     ]
@@ -355,9 +352,14 @@
         (u/rlatom ::gm1 (constantly {:notes #{4}}))
         {}))
 
+    ;; TODO config UI for set of strings and change notation
     (figure "Ex G1: find where to play"
       (m12.widgets.guitar/find-cell-exo
         (u/rlatom ::exG1 m12.widgets.guitar/init-find-cell)))
+
+    ;; TODO play based on tab
+    ;; TODO adding exercise based on
+
     ]
 
    ])
