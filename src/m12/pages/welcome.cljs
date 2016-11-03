@@ -110,6 +110,7 @@
       [:i "(click to play)"]]
      ]))
 
+;; FIXME remove
 (defn non-repeating [next-problem]
   (fn [problem]
     (->> problem (iterate next-problem) (remove #{problem}) first)))

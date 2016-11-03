@@ -1,13 +1,16 @@
 (ns m12.widgets.arithmetic
   (:require [rum.core :as rum]
             [sablono.core :as sab :include-macros true]
+            [clojure.string :as str]
 
             [m12.services.synth :as synth]
             [m12.lib.math :as math]
             [m12.lib.representations :as repr]
             [m12.widgets.ui-toolkit :as utk]
-            [clojure.string :as str]
-            [m12.utils :as u])
+            [m12.utils :as u]
+
+            [m12.lib.games :as games]
+            [m12.lib.games.components :as gamec])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -264,3 +267,13 @@
       (constantly {:+int 7
                    :game/problem {:na 3 :op :+ :nb 7}
                    :game/state {:answered nil}}))))
+
+(defcard game-scale-note
+  (let [game (games/simple-random-game
+               {:generate-problem (fn [] (rand-nth [{:na 3 :op :+ :nb 7}
+                                                    {:na 1 :op :- :nb 2}]))
+                :get-the-answer (fn [{:keys [na op nb]}]
+                                  ((case op :+ math/+n :- math/-n) na nb))})]
+    (gamec/<game-in-rlatom> game ::game-scale-note1
+      (fn [_ problem sa correct? submit! next!]
+        (<add-scale-notes-view> {} problem sa correct? submit! next!)))))
