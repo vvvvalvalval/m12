@@ -70,6 +70,10 @@
   [fnote]
   (add-sn-set-to fnote [0 2 4 5 7 9 11]))
 
+(defn pentatonic-scale-notes
+  [fnote]
+  (add-sn-set-to fnote [0 2 4 7 9]))
+
 (defn harmonic-scale-notes
   [fnote]
   (add-sn-set-to fnote [0 2 4 5 7 8 11]))

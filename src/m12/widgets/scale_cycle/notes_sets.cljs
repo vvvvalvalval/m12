@@ -20,21 +20,36 @@
   [fundatemental set-type]
   (let [[kind data] set-type]
     (case kind
+      :interval #{fundatemental (math/+n fundatemental data)}
       :chord (case data
                :major (math/major-chord-notes fundatemental)
                :minor (math/minor-chord-notes fundatemental))
       :scale (case data
                :major (math/major-scale-notes fundatemental)
                :harmonic-major (math/harmonic-scale-notes fundatemental)
+               :pentatonic (math/pentatonic-scale-notes fundatemental)
                :double-harmonic-major (math/double-harmonic-scale-notes fundatemental))
       :mode (math/mode-notes fundatemental data))))
 
 (def snsb-set-types
-  [["Major chord" [:chord :major]]
-   ["Minor chord" [:chord :minor]]
+  [["Interval: minor 2nd (+1)" [:interval 1]]
+   ["Interval: major 2nd (+2)" [:interval 2]]
+   ["Interval: minor 3rd (+3)" [:interval 3]]
+   ["Interval: major 3nd (+4)" [:interval 4]]
+   ["Interval: perfect 4th (+5)" [:interval 5]]
+   ["Interval: diminished 5th (+6)" [:interval 6]]
+   ["Interval: perfect 5th (+7)" [:interval 7]]
+   ["Interval: minor 6th (+8)" [:interval 8]]
+   ["Interval: major 6th (+9)" [:interval 9]]
+   ["Interval: minor 7th (+a)" [:interval 10]]
+   ["Interval: major 7th (+b)" [:interval 11]]
+   ["Interval: octave (+10)" [:interval 12]]
+   ["Chord: major triad (+047)" [:chord :major]]
+   ["Chord: minor triad (+037)" [:chord :minor]]
    ["Major scale" [:scale :major]]
    ["Harmonic major scale" [:scale :harmonic-major]]
    ["Double harmonic major scale" [:scale :double-harmonic-major]]
+   ["Pentatonic major scale" [:scale :pentatonic]]
    ["Mode: Ionian" [:mode :ionian]]
    ["Mode: Dorian" [:mode :dorian]]
    ["Mode: Phrygian" [:mode :phrygian]]

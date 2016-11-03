@@ -23,50 +23,53 @@
    [:div.panel-heading [:h5 title]]
    [:div.panel-body body]])
 
+
+;; TODO vertical tables one next to the other instead
 (defc <scale-notations-comparison-table>
   < rum/static
   []
   (let [displayed-notes math/all-notes]
-    (figure "Representation of notes in the scale:"
-      [:table.table.table-bordered.text-center
-       [:tbody
-        [:tr
-         [:td "Letter notation"]
-         (for [n displayed-notes]
-           [:td {:key (str n)}
-            (repr/stringify-letter-note n)])]
-        [:tr
-         [:td "Solfège notation"]
-         (for [n displayed-notes]
-           [:td {:key (str n)}
-            (repr/stringify-solfege-note n)])]
-        [:tr
-         [:td [:strong "M12 notation"]]
-         (for [n displayed-notes]
-           [:td {:key (str n)}
-            [:strong (repr/stringify-note n)]])]]])
+    [:div.text-center
+     [:h4 "Notes"]
+     [:table.table.table-bordered
+      [:thead
+       [:tr
+        [:th.text-center "Letter"]
+        [:th.text-center "Solfège"]
+        [:th.text-center "M12"]]]
+      [:tbody
+       (for [n displayed-notes]
+         [:tr {:key (str n)}
+          [:td (repr/stringify-letter-note n)]
+          [:td (repr/stringify-solfege-note n)]
+          [:td [:strong (repr/stringify-note n)]]])
+       ]]]
     ))
 
 (defc <scale-intervals-notations-comparison-table>
   < rum/static
   []
   (let [displayed-notes math/all-notes]
-    (figure "Representation of intervals"
-      [:table.table.table-bordered.text-center
-       [:tbody
-        [:tr
-         [:td "Classical notation"]
-         (for [iv (str/split "unisson,minor 2nd, major 2nd, minor 3rd, major 3rd, 4th, diminished 5th,
+    [:div.text-center
+     [:h4 "Intervals"]
+     [:table.table.table-bordered
+      [:thead
+       [:tr
+        [:th.text-center "Classical"]
+        [:th.text-center "M12"]]]
+      [:tbody
+       (for [[m12 english]
+             (map vector
+               (concat
+                 (->> math/all-notes (map repr/stringify-note))
+                 ["10"])
+               (str/split "unisson,minor 2nd, major 2nd, minor 3rd, major 3rd, 4th, diminished 5th,
         5th, minor 6th, major 6th, minor 7th, major 7th, octave"
-                    #"\s*,\s*" )]
-           [:td {:key (str iv)} iv])]
-        [:tr
-         [:td [:strong "M12 notation"]]
-         (for [n displayed-notes]
-           [:td {:key (str n)}
-            [:strong [:i (repr/stringify-note n)]]])
-         [:td {:key "octave"}
-          [:strong [:i "10"]]]]]])
+                 #"\s*,\s*"))]
+         [:tr {:key m12}
+          [:td english]
+          [:td [:i [:strong m12]]]])
+       ]]]
     ))
 
 (defc <octaves-compare-table>
@@ -127,9 +130,12 @@
     " which uses 12 digits instead of 10, which is why I'm calling it " [:strong "M12"]
     ". This website is an environment to test it and get familiar with it."]
    [:p "The idea is to simply represent notes and intervals as numbers, like so:"]
-   (<scale-notations-comparison-table>)
-   [:p "Similarly for intervals:"]
-   (<scale-intervals-notations-comparison-table>)
+   (figure "Notations for notes and intervals"
+     [:div.row
+      [:div.col-sm-6.col-md-4.col-md-offset-2.col-lg-3.col-lg-offset-3
+       (<scale-notations-comparison-table>)]
+      [:div.col-sm-6.col-md-4.col-lg-3
+       (<scale-intervals-notations-comparison-table>)]])
 
    [:h3 "12 digits"]
    [:p "There are 12 notes in the scale, not 10.
@@ -154,7 +160,6 @@
                                (map repr/parse-height)))]
 
    [:div
-    ;; TODO
     [:h2 "Why a new notation?"]
     [:p "I'm currently a bit dissatisfied with the notations we currently use,
        espcecially the one - tabs - that guitarists use. I think we can do better."]
@@ -294,6 +299,7 @@
              :op (rand-nth [:+ :-])
              :nb (rand-nth math/all-notes)}))))
 
+
     (figure "Ex S2: Find the complement"
       (m12.widgets.arithmetic/<add-scale-notes-game> {}
         (u/rlatom ::sn2 (constantly (m12.widgets.arithmetic/add-scale-notes-init 0 :- 2)))
@@ -303,43 +309,78 @@
              :op :-
              :nb (rand-nth math/all-notes)}))))
 
-    (figure "Ex S3: the cycle of 4s"
-      [:div.text-center
-       (scyc/scale-cycle {}
-         {:width 200
-          :f-note-props (fn [props note _]
-                          (assoc props :fill
-                            (case (mod note 4)
-                              0 "#B2FF59"
-                              1 "#69F0AE"
-                              2 "#64FFDA"
-                              3 "#18FFFF")))})
+    ;; TODO factor out repetition between S3a and S3b
+    (figure "Ex S3a: the cycle of 4s"
+      (let [colors ["#B2FF59" "#69F0AE" "#64FFDA" "#18FFFF"]]
+        [:div.text-center
+         ;; TODO for cycles: add a table representing the cycles in the same colors as the wheels
+         [:div.row
+          [:div.col-sm-6.col-md-3.col-md-offset-3 {:style {:height "220px"}}
+           [:div {:style {:height "100%"
+                          :display "flex"
+                          :flex-direction "column"
+                          :justify-content "center"}}
+            [:table.table
+             [:tbody
+              (->> math/all-notes (partition (count colors))
+                (map (fn [notes]
+                       [:tr {:key (first notes)}
+                        (->> notes
+                          (map (fn [color n]
+                                 [:td {:key n :style {:backgroundColor color
+                                                      :border "1px black solid"}}
+                                  (repr/stringify-note n)]) colors))])))]]]
+           ]
+          [:div.col-sm-6.col-md-3 {:style {:height "220px"}}
+           [:div {:style {:height "100%"
+                          :display "flex"
+                          :flex-direction "column"
+                          :justify-content "center"}}
+            [:div {:style {:margin "auto"}}
+             (scyc/scale-cycle {:style {:display "inline-block"}}
+               {:width 200
+                :f-note-props (fn [props note _]
+                                (assoc props :fill (colors (mod note 4))))})]]]]
 
-       (m12.widgets.arithmetic/<add-scale-notes-game> {}
-         (u/rlatom ::sn3 (constantly (m12.widgets.arithmetic/add-scale-notes-init 4 :+ 4)))
-         (non-repeating
-           (fn [pb]
-             {:na (rand-nth math/all-notes)
-              :op (rand-nth [:+ :-])
-              :nb (rand-nth [4 8])})))])
+         (m12.widgets.arithmetic/<add-scale-notes-game> {}
+           (u/rlatom ::sn3 (constantly (m12.widgets.arithmetic/add-scale-notes-init 4 :+ 4)))
+           (non-repeating
+             (fn [pb]
+               {:na (rand-nth math/all-notes)
+                :op (rand-nth [:+ :-])
+                :nb (rand-nth [4 8])})))]))
 
-    (figure "Ex S4: the cycle of 3s"
-      [:div.text-center
-       (scyc/scale-cycle {}
-         {:width 200
-          :f-note-props (fn [props note _]
-                          (assoc props :fill
-                            (case (mod note 3)
-                              0 "#FFFF00"
-                              1 "#FFD740"
-                              2 "#FFCC80")))})
-       (m12.widgets.arithmetic/<add-scale-notes-game> {}
-         (u/rlatom ::sn4 (constantly (m12.widgets.arithmetic/add-scale-notes-init 2 :+ 3)))
-         (non-repeating
-           (fn [pb]
-             {:na (rand-nth math/all-notes)
-              :op (rand-nth [:+ :-])
-              :nb (rand-nth [3 6 9])})))])
+    (figure "Ex S3b: the cycle of 3s"
+      (let [colors ["#FFFF00" "#FFD740" "#FFCC80"]]
+        [:div.text-center
+         [:div.row
+          [:div.col-sm-6.col-md-3.col-md-offset-3
+           [:div {:style {:padding "20px 20px"}}
+            [:table.table
+             [:tbody
+              (->> math/all-notes (partition (count colors))
+                (map (fn [notes]
+                       [:tr {:key (first notes)}
+                        (->> notes
+                          (map (fn [color n]
+                                 [:td {:key n :style {:backgroundColor color
+                                                      :border "1px black solid"}}
+                                  (repr/stringify-note n)]) colors))])))]]]
+           ]
+          [:div.col-sm-6.col-md-3
+           (scyc/scale-cycle {}
+             {:width 200
+              :f-note-props (fn [props note _]
+                              (assoc props :fill
+                                (colors (mod note 3))))})]]
+
+         (m12.widgets.arithmetic/<add-scale-notes-game> {}
+           (u/rlatom ::sn4 (constantly (m12.widgets.arithmetic/add-scale-notes-init 2 :+ 3)))
+           (non-repeating
+             (fn [pb]
+               {:na (rand-nth math/all-notes)
+                :op (rand-nth [:+ :-])
+                :nb (rand-nth [3 6 9])})))]))
 
 
     ;; TODO strong and weak points
@@ -347,12 +388,14 @@
 
    [:div
     [:h2 "For guitarists"]
+    ;; TODO option for changing notation
     (figure "M12 guitar map"
       (m12.widgets.guitar/<guitar-map> {}
         (u/rlatom ::gm1 (constantly {:notes #{4}}))
         {}))
 
     ;; TODO config UI for set of strings and change notation
+    ;; TODO: on the left, small tablature displaying the note
     (figure "Ex G1: find where to play"
       (m12.widgets.guitar/find-cell-exo
         (u/rlatom ::exG1 m12.widgets.guitar/init-find-cell)))
