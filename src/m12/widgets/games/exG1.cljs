@@ -7,17 +7,17 @@
             [m12.utils :as u]
             [m12.lib.games :as games]
             [m12.widgets.gtab :as gtab]
-            [m12.lib.representations :as repr])
+            [m12.lib.guitar :as gtr])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
 
 (def g1
   "G1: find where to play a cell"
-  (games/simple-random-game
+  (games/basic-random-game
     {:generate-problem
      (fn [config]
-       (let [s (rand-nth (wgt/standard-guitar-strings))
+       (let [s (rand-nth (gtr/standard-guitar-strings))
              j (rand-int 12)
              h (+ s j)]
          {:s s :h h}))
@@ -45,7 +45,7 @@
    (wgt/<fretboard-column-help> i1 j1)])
 
 (def string-height->index
-  (->> (wgt/standard-guitar-strings)
+  (->> (gtr/standard-guitar-strings)
     (map vector (range))
     (reduce (fn [m [i s]]
               (assoc m s i)) {})))
@@ -60,7 +60,7 @@
                     :padding "35px 0"
                     :paddingLeft "10px"}}
       (gtab/<gtab> {}
-        {:n-strings 6 :string-heights (wgt/standard-guitar-strings)
+        {:n-strings 6 :string-heights (gtr/standard-guitar-strings)
          :length 1}
         [{::gtab/string (string-height->index s) ::gtab/x 0.5}]
         (fn [_ i]
@@ -86,9 +86,7 @@
    [:div.text-center
     (cond
       correct? [:p "Well played!"
-                (utk/<next-btn> {} next!)
-                #_[:button.btn.btn-default.pull-right {:on-click next!}
-                   "Next"]]
+                (utk/<next-btn> {} next!)]
       (some? answered) (let [[s1 h1] answered]
                          [:p (cond
                                (not= s s1) "Dude! that's not even the right string!"
@@ -98,7 +96,7 @@
    ])
 
 (defcard <G1>-ex
-  (<G1> (let [s (nth (wgt/standard-guitar-strings) 3)
+  (<G1> (let [s (nth (gtr/standard-guitar-strings) 3)
               h (+ s 7)]
           {:s s :h h})
     nil nil #(do nil) #(do nil)))

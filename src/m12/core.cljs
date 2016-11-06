@@ -13,6 +13,7 @@
     [m12.widgets.scale-cycle]
     [m12.widgets.posts]
     [m12.lib.games]
+    [m12.widgets.games.exG2]
 
     [m12.pages.welcome])
   (:require-macros

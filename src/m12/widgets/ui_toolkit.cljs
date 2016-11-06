@@ -158,3 +158,25 @@
                :on-click (fn [_] (select! nt))}
         (= selected-notation nt) (assoc :class "active"))
       nt-name])])
+
+(defc <height-picker>
+  < rum/static
+  [props
+   {:as opts,
+    :keys [f-props
+           content]
+    :or {f-props identity
+         content (fn [h] (<height> h))}}
+   select!
+   hs]
+  [:div.hpicker props
+   (->> hs
+     (partition-by math/octave-of-height)
+     (map-indexed
+       (fn [i hs]
+         [:div {:key (str "row-" i)}
+          (for [h hs]
+            [:button.btn.btn-default.hpicker-btn
+             (f-props {:key h :on-click #(select! h)} h)
+             (content h)])])))
+   ])

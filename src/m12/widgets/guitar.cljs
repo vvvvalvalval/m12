@@ -7,7 +7,8 @@
             [m12.services.synth :as synth]
             [m12.lib.math :as math]
             [m12.widgets.ui-toolkit :as utk]
-            [m12.lib.representations :as repr])
+            [m12.lib.representations :as repr]
+            [m12.lib.guitar :as gtr])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -66,11 +67,6 @@
     {:style {:height (str diameter-px "px")
              :width (str diameter-px "px")}}]])
 
-(defn standard-guitar-strings
-  []
-  (->> (str/split "24 29 32 37 3b 44" #" ")
-    reverse (mapv repr/parse-height)))
-
 (defc <fretboard>
   "Renders a guitar fretboard.
   * `opts` contains options which parameterize the fretboard.
@@ -86,7 +82,7 @@
     :keys [N S round-diameter-px show-string-heights
            row-fn string-fn]
     :or {N 13
-         S (standard-guitar-strings)
+         S (gtr/standard-guitar-strings)
          round-diameter-px 10
          show-string-heights true
          row-fn identity

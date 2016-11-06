@@ -46,7 +46,7 @@
     nil nil #(do nil) #(do nil)))
 
 (defcard game-scale-note
-  (let [game (games/simple-random-game
+  (let [game (games/basic-random-game
                {:generate-problem (fn [_] (rand-nth [{:na 3 :op :+ :nb 7}
                                                     {:na 1 :op :- :nb 2}]))
                 :get-the-answer (fn [{:keys [na op nb]}]
@@ -68,7 +68,7 @@
 
 (def s1
   "S1: generic addition of scale notes"
-  (games/simple-random-game
+  (games/basic-random-game
     {:generate-problem
      (fn [_]
        {:na (rand-nth math/all-notes)
@@ -81,7 +81,7 @@
 
 (def s2
   "S2: find the complement."
-  (games/simple-random-game
+  (games/basic-random-game
     {:generate-problem
      (fn [_]
        {:na 0
@@ -99,7 +99,7 @@
               (filter #(-> % (mod hop) (= 0)))
               (remove #{0})
               vec)]
-    (games/simple-random-game
+    (games/basic-random-game
       {:generate-problem
        (fn [_]
          {:na (rand-nth math/all-notes)

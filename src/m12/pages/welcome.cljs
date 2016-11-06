@@ -17,6 +17,7 @@
             [m12.lib.games.components :as gamec]
             [m12.widgets.games.exS :as exS]
             [m12.widgets.games.exG1 :as exG1]
+            [m12.widgets.games.exG2 :as exG2]
             )
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
@@ -329,6 +330,11 @@
       (gamec/<game-in-rlatom> exG1/g1 ::G1 nil
         (fn [_ problem sa correct? submit! next!]
           (exG1/<G1> problem sa correct? submit! next!))))
+
+    (figure "Ex G2: find the note played on the tab"
+      (gamec/<game-in-rlatom> exG2/g2 ::G2 nil
+        (fn [_ problem sa correct? submit! next!]
+          (exG2/<G2> problem sa correct? submit! next!))))
 
     ;; TODO play based on tab
     ;; TODO adding exercise based on

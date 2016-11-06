@@ -4,7 +4,7 @@
   (fn [config problem]
     (->> problem (iterate #(next-problem config %)) (remove #{problem}) first)))
 
-(defn simple-random-game
+(defn basic-random-game
   "Helper for making a game which has 1 answer, and which generates random problems without memory (just non-repeating)."
   [{:as game
     :keys [generate-problem

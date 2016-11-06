@@ -5,7 +5,8 @@
             [m12.lib.math :as math]
             [m12.lib.representations :as repr]
             [m12.utils :as u]
-            [m12.widgets.guitar :as gtr]
+            [m12.widgets.guitar :as wgt]
+            [m12.lib.guitar :as gtr]
             [m12.widgets.ui-toolkit :as utk])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
