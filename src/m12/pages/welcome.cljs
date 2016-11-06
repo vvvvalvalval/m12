@@ -113,11 +113,6 @@
       [:i "(click to play)"]]
      ]))
 
-;; FIXME remove
-(defn non-repeating [next-problem]
-  (fn [problem]
-    (->> problem (iterate next-problem) (remove #{problem}) first)))
-
 (defc <welcome>
   []
   [:div.container
@@ -270,7 +265,6 @@
 
     [:p "We call the 12 notes in this cycle the " [:strong [:em "scale notes"]] "."]
 
-    ;; TODO explanation notes set
     [:p "This cycle representation is useful for displaying sets of notes
     (such as chords and scales) as visual patterns, as shown in the figure below:"]
 
@@ -292,6 +286,9 @@
     ;; If you have a good memory, you can simply write the addition and subtraction tables
     ;; for all 12 scale notes and learn them by heart. They are given below:
     ;; TODO: scale notes addition and subtraction tables
+
+
+
     ;;
     ;; TODO addition widget
     (figure "Ex S1: General addition of scale notes"
@@ -328,8 +325,7 @@
         {}))
 
     ;; TODO config UI for set of strings and change notation
-    ;; TODO: on the left, small tablature displaying the note
-    (figure "Ex G1: find where to play"
+    (figure "Ex G1: find where to play the note on the tab."
       (gamec/<game-in-rlatom> exG1/g1 ::G1 nil
         (fn [_ problem sa correct? submit! next!]
           (exG1/<G1> problem sa correct? submit! next!))))

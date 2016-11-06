@@ -5,7 +5,9 @@
             [m12.widgets.ui-toolkit :as utk]
             [rum.core :as rum]
             [m12.utils :as u]
-            [m12.lib.games :as games])
+            [m12.lib.games :as games]
+            [m12.widgets.gtab :as gtab]
+            [m12.lib.representations :as repr])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -42,34 +44,61 @@
                 (submit! [s1 h1]))}
    (wgt/<fretboard-column-help> i1 j1)])
 
+(def string-height->index
+  (->> (wgt/standard-guitar-strings)
+    (map vector (range))
+    (reduce (fn [m [i s]]
+              (assoc m s i)) {})))
+
 (defc <G1> < rum/static
   [{:as pb, :keys [s h]} answered
    correct? submit! next!]
   [:div
-   [:p.text-center [:i "Play " [:strong (utk/<height> h)] " on " [:strong (utk/<height> s)] ":"]]
-   (wgt/<fretboard> {:class "find-cell-fretboard"}
-     {:string-fn (fn [props i1 s1]
-                   (cond-> props
-                     (= s s1)
-                     (update :style assoc
-                       :borderColor "blue")))
-      :row-fn (fn [props i1 s1]
-                (cond-> props
-                  (= s s1)
-                  (update :class #(str % " find-cell-row--selected"))))}
-     (fn [_ s1 i1 j1 h1]
-       (let [submitted? (when answered
-                          (let [[s2 h2] answered]
-                            (and (= s2 s1) (= h2 h1))))]
-         (<G1-cell> h s1 i1 j1 h1 submitted? correct? submit!))))
-   (cond
-     correct? [:p "Well played!"
-               (utk/<next-btn> {} next!)
-               #_[:button.btn.btn-default.pull-right {:on-click next!}
-                  "Next"]]
-     (some? answered) (let [[s1 h1] answered]
-                        [:p (cond
-                              (not= s s1) "Dude! that's not even the right string!"
-                              :else "Nope, try again.")]
-                        ))
+   [:div.row
+    [:div.col-sm-3.col-md-2
+     [:div {:style {;; HACK working around the fact that the strings numbers will overflow on the left
+                    :padding "35px 0"
+                    :paddingLeft "10px"}}
+      (gtab/<gtab> {}
+        {:n-strings 6 :string-heights (wgt/standard-guitar-strings)
+         :length 1}
+        [{::gtab/string (string-height->index s) ::gtab/x 0.5}]
+        (fn [_ i]
+          [:div.gtab-note
+           (utk/<height> h)]))]]
+    [:div.col-sm-9.col-md-10
+     (wgt/<fretboard> {:class "find-cell-fretboard"}
+       {:string-fn (fn [props i1 s1]
+                     (cond-> props
+                       (= s s1)
+                       (update :style assoc
+                         :borderColor "blue")))
+        :row-fn (fn [props i1 s1]
+                  (cond-> props
+                    (= s s1)
+                    (update :class #(str % " find-cell-row--selected"))))}
+       (fn [_ s1 i1 j1 h1]
+         (let [submitted? (when answered
+                            (let [[s2 h2] answered]
+                              (and (= s2 s1) (= h2 h1))))]
+           (<G1-cell> h s1 i1 j1 h1 submitted? correct? submit!))))
+     ]]
+   [:div.text-center
+    (cond
+      correct? [:p "Well played!"
+                (utk/<next-btn> {} next!)
+                #_[:button.btn.btn-default.pull-right {:on-click next!}
+                   "Next"]]
+      (some? answered) (let [[s1 h1] answered]
+                         [:p (cond
+                               (not= s s1) "Dude! that's not even the right string!"
+                               :else "Nope, try again.")]
+                         )
+      :else [:p " "])]
    ])
+
+(defcard <G1>-ex
+  (<G1> (let [s (nth (wgt/standard-guitar-strings) 3)
+              h (+ s 7)]
+          {:s s :h h})
+    nil nil #(do nil) #(do nil)))

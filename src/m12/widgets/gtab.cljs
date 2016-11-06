@@ -5,7 +5,8 @@
             [m12.lib.math :as math]
             [m12.lib.representations :as repr]
             [m12.utils :as u]
-            [m12.widgets.guitar :as gtr])
+            [m12.widgets.guitar :as gtr]
+            [m12.widgets.ui-toolkit :as utk])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -16,7 +17,7 @@
     :or {n-strings 6}}
    items content]
   (let [strings-items (group-by ::string items)]
-    [:div.gtab
+    [:div.gtab props
      (for [i (range n-strings)]
        [:div.gtab-string {:key (str "gtr-string-" i)}
         [:div.gtab-string-inner
@@ -31,7 +32,7 @@
                )))]
         (when-let [h (get string-heights i)]
           [:div.gtab-item.gtab-string-height
-           [:div.gtab-note (repr/stringify-height h)]])])]))
+           [:div.gtab-note (utk/<height> h) #_(repr/stringify-height h)]])])]))
 
 (defcard gtab-smoke-on-the-water
   (<gtab> {} {:length 4}
