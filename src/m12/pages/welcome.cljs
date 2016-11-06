@@ -13,7 +13,9 @@
             [m12.widgets.scale-cycle :as scyc]
             [m12.widgets.scale-cycle.notes-sets]
             [m12.widgets.arithmetic]
-            [m12.widgets.guitar])
+            [m12.widgets.guitar]
+            [m12.widgets.games.exS :as exS]
+            [m12.lib.games.components :as gamec])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -24,7 +26,6 @@
    [:div.panel-body body]])
 
 
-;; TODO vertical tables one next to the other instead
 (defc <scale-notations-comparison-table>
   < rum/static
   []
@@ -292,96 +293,25 @@
     ;;
     ;; TODO addition widget
     (figure "Ex S1: General addition of scale notes"
-      (m12.widgets.arithmetic/<add-scale-notes-game> {}
-        (u/rlatom ::sn1 (constantly (m12.widgets.arithmetic/add-scale-notes-init 2 :+ 2)))
-        (non-repeating
-          (fn [pb]
-            {:na (rand-nth math/all-notes)
-             :op (rand-nth [:+ :-])
-             :nb (rand-nth math/all-notes)}))))
+      (gamec/<game-in-rlatom> exS/s1 ::s1
+        (fn [_ problem sa correct? submit! next!]
+          (exS/<add-scale-notes-view> {} problem sa correct? submit! next!))))
 
 
     (figure "Ex S2: Find the complement"
-      (m12.widgets.arithmetic/<add-scale-notes-game> {}
-        (u/rlatom ::sn2 (constantly (m12.widgets.arithmetic/add-scale-notes-init 0 :- 2)))
-        (non-repeating
-          (fn [pb]
-            {:na 0
-             :op :-
-             :nb (rand-nth math/all-notes)}))))
+      (gamec/<game-in-rlatom> exS/s2 ::s2
+        (fn [_ problem sa correct? submit! next!]
+          (exS/<add-scale-notes-view> {} problem sa correct? submit! next!))))
 
-    ;; TODO factor out repetition between S3a and S3b
     (figure "Ex S3a: the cycle of 4s"
-      (let [colors ["#B2FF59" "#69F0AE" "#64FFDA" "#18FFFF"]]
-        [:div.text-center
-         ;; TODO for cycles: add a table representing the cycles in the same colors as the wheels
-         [:div.row
-          [:div.col-sm-6.col-md-3.col-md-offset-3 {:style {:height "220px"}}
-           [:div {:style {:height "100%"
-                          :display "flex"
-                          :flex-direction "column"
-                          :justify-content "center"}}
-            [:table.table
-             [:tbody
-              (->> math/all-notes (partition (count colors))
-                (map (fn [notes]
-                       [:tr {:key (first notes)}
-                        (->> notes
-                          (map (fn [color n]
-                                 [:td {:key n :style {:backgroundColor color
-                                                      :border "1px black solid"}}
-                                  (repr/stringify-note n)]) colors))])))]]]
-           ]
-          [:div.col-sm-6.col-md-3 {:style {:height "220px"}}
-           [:div {:style {:height "100%"
-                          :display "flex"
-                          :flex-direction "column"
-                          :justify-content "center"}}
-            [:div {:style {:margin "auto"}}
-             (scyc/scale-cycle {:style {:display "inline-block"}}
-               {:width 200
-                :f-note-props (fn [props note _]
-                                (assoc props :fill (colors (mod note 4))))})]]]]
-
-         (m12.widgets.arithmetic/<add-scale-notes-game> {}
-           (u/rlatom ::sn3 (constantly (m12.widgets.arithmetic/add-scale-notes-init 4 :+ 4)))
-           (non-repeating
-             (fn [pb]
-               {:na (rand-nth math/all-notes)
-                :op (rand-nth [:+ :-])
-                :nb (rand-nth [4 8])})))]))
+      (gamec/<game-in-rlatom> exS/s3a ::s3a
+        (fn [_ problem sa correct? submit! next!]
+          (exS/<s3a> {} problem sa correct? submit! next!))))
 
     (figure "Ex S3b: the cycle of 3s"
-      (let [colors ["#FFFF00" "#FFD740" "#FFCC80"]]
-        [:div.text-center
-         [:div.row
-          [:div.col-sm-6.col-md-3.col-md-offset-3
-           [:div {:style {:padding "20px 20px"}}
-            [:table.table
-             [:tbody
-              (->> math/all-notes (partition (count colors))
-                (map (fn [notes]
-                       [:tr {:key (first notes)}
-                        (->> notes
-                          (map (fn [color n]
-                                 [:td {:key n :style {:backgroundColor color
-                                                      :border "1px black solid"}}
-                                  (repr/stringify-note n)]) colors))])))]]]
-           ]
-          [:div.col-sm-6.col-md-3
-           (scyc/scale-cycle {}
-             {:width 200
-              :f-note-props (fn [props note _]
-                              (assoc props :fill
-                                (colors (mod note 3))))})]]
-
-         (m12.widgets.arithmetic/<add-scale-notes-game> {}
-           (u/rlatom ::sn4 (constantly (m12.widgets.arithmetic/add-scale-notes-init 2 :+ 3)))
-           (non-repeating
-             (fn [pb]
-               {:na (rand-nth math/all-notes)
-                :op (rand-nth [:+ :-])
-                :nb (rand-nth [3 6 9])})))]))
+      (gamec/<game-in-rlatom> exS/s3b ::s3b
+        (fn [_ problem sa correct? submit! next!]
+          (exS/<s3b> {} problem sa correct? submit! next!))))
 
 
     ;; TODO strong and weak points

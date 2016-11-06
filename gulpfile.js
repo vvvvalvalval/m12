@@ -34,6 +34,5 @@ gulp.task('less-prod', function() {
 });
 
 gulp.task('build-prod', function(){
-  // TODO actual build for prod with minification etc. (Val, 30 Oct 2016)
   gulp.start('less-prod');
 })
