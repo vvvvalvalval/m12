@@ -14,8 +14,10 @@
             [m12.widgets.scale-cycle.notes-sets]
             [m12.widgets.arithmetic]
             [m12.widgets.guitar]
+            [m12.lib.games.components :as gamec]
             [m12.widgets.games.exS :as exS]
-            [m12.lib.games.components :as gamec])
+            [m12.widgets.games.exG1 :as exG1]
+            )
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
     [devcards.core :as dc :refer [defcard deftest]]))
@@ -328,8 +330,9 @@
     ;; TODO config UI for set of strings and change notation
     ;; TODO: on the left, small tablature displaying the note
     (figure "Ex G1: find where to play"
-      (m12.widgets.guitar/find-cell-exo
-        (u/rlatom ::exG1 m12.widgets.guitar/init-find-cell)))
+      (gamec/<game-in-rlatom> exG1/g1 ::G1 nil
+        (fn [_ problem sa correct? submit! next!]
+          (exG1/<G1> problem sa correct? submit! next!))))
 
     ;; TODO play based on tab
     ;; TODO adding exercise based on
