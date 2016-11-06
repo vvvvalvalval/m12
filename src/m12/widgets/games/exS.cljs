@@ -47,11 +47,11 @@
 
 (defcard game-scale-note
   (let [game (games/simple-random-game
-               {:generate-problem (fn [] (rand-nth [{:na 3 :op :+ :nb 7}
+               {:generate-problem (fn [_] (rand-nth [{:na 3 :op :+ :nb 7}
                                                     {:na 1 :op :- :nb 2}]))
                 :get-the-answer (fn [{:keys [na op nb]}]
                                   ((case op :+ math/+n :- math/-n) na nb))})]
-    (gamec/<game-in-rlatom> game ::game-scale-note1
+    (gamec/<game-in-rlatom> game ::game-scale-note1 nil
       (fn [_ problem sa correct? submit! next!]
         (<add-scale-notes-view> {} problem sa correct? submit! next!)))))
 
@@ -70,7 +70,7 @@
   "S1: generic addition of scale notes"
   (games/simple-random-game
     {:generate-problem
-     (fn []
+     (fn [_]
        {:na (rand-nth math/all-notes)
         :op (rand-nth [:+ :-])
         :nb (rand-nth math/all-notes)})
@@ -83,7 +83,7 @@
   "S2: find the complement."
   (games/simple-random-game
     {:generate-problem
-     (fn []
+     (fn [_]
        {:na 0
         :op :-
         :nb (rand-nth math/all-notes)})
@@ -101,7 +101,7 @@
               vec)]
     (games/simple-random-game
       {:generate-problem
-       (fn [pb]
+       (fn [_]
          {:na (rand-nth math/all-notes)
           :op (rand-nth [:+ :-])
           :nb (rand-nth nbs)})

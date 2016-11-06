@@ -293,23 +293,23 @@
     ;;
     ;; TODO addition widget
     (figure "Ex S1: General addition of scale notes"
-      (gamec/<game-in-rlatom> exS/s1 ::s1
+      (gamec/<game-in-rlatom> exS/s1 ::s1 nil
         (fn [_ problem sa correct? submit! next!]
           (exS/<add-scale-notes-view> {} problem sa correct? submit! next!))))
 
 
     (figure "Ex S2: Find the complement"
-      (gamec/<game-in-rlatom> exS/s2 ::s2
+      (gamec/<game-in-rlatom> exS/s2 ::s2 nil
         (fn [_ problem sa correct? submit! next!]
           (exS/<add-scale-notes-view> {} problem sa correct? submit! next!))))
 
     (figure "Ex S3a: the cycle of 4s"
-      (gamec/<game-in-rlatom> exS/s3a ::s3a
+      (gamec/<game-in-rlatom> exS/s3a ::s3a nil
         (fn [_ problem sa correct? submit! next!]
           (exS/<s3a> {} problem sa correct? submit! next!))))
 
     (figure "Ex S3b: the cycle of 3s"
-      (gamec/<game-in-rlatom> exS/s3b ::s3b
+      (gamec/<game-in-rlatom> exS/s3b ::s3b nil
         (fn [_ problem sa correct? submit! next!]
           (exS/<s3b> {} problem sa correct? submit! next!))))
 

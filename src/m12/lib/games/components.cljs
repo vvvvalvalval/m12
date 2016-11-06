@@ -15,19 +15,20 @@
   [state-atom answ]
   (swap! state-atom submit-answer answ))
 
-(defn next-pb [game-state next-problem]
+(defn next-pb [game-state next-problem config]
   (-> game-state
-    (update :game/problem next-problem)
+    (update :game/problem #(next-problem config %))
     (assoc :game/state {:answered nil})))
 
 (defn next-pb!
-  [next-problem state-atom]
-  (swap! state-atom next-pb next-problem))
+  [next-problem state-atom config]
+  (swap! state-atom next-pb next-problem config))
 
 (defc <game-manager>
   < rum/static rum/reactive
   [state-atom
    {:as game, :keys [next-problem answer-correct?]}
+   config
    <game-view>]
   (let [{problem :game/problem
          {:keys [submitted-answer]} :game/state} (rum/react state-atom)
@@ -40,15 +41,15 @@
       submitted-answer
       correct?
       (u/pfn submit-answer! state-atom)
-      (u/pfn next-pb! next-problem state-atom)
+      (u/pfn next-pb! next-problem state-atom config)
       )))
 
-(defn init-game [game]
-  {:game/problem ((:initial-problem game))
+(defn init-game [game config]
+  {:game/problem ((:initial-problem game) config)
    :game/state {:submitted-answer nil}})
 
 (defc <game-in-rlatom>
   < rum/static
-  [game rl-key <game-view>]
-  (let [state-atom (u/rlatom rl-key #(init-game game))]
-    (<game-manager> state-atom game <game-view>)))
+  [game rl-key config <game-view>]
+  (let [state-atom (u/rlatom rl-key #(init-game game config))]
+    (<game-manager> state-atom game config <game-view>)))
