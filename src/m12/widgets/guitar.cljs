@@ -48,7 +48,7 @@
      (cell-content N s i j h)
      (when (and show-string-heights (= j 0))
        [:div.gtr-cell-fret-text
-        {}
+        {:key "string-height"}
         (utk/<height> h)])
      ]))
 
@@ -102,7 +102,8 @@
                 cell-content)))
           ;; string
           [:div.gtr-string
-           (string-fn {:style {:left (str (* 100 (cell-left-offset N 1)) "%")}}
+           (string-fn {:key (str "string-" i)
+                       :style {:left (str (* 100 (cell-left-offset N 1)) "%")}}
              i s)]
           ])))
    ;; round marks on the fretboard

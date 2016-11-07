@@ -246,6 +246,8 @@
     ;; Can click on a button to play (interval as superposition of notes).
     ;; it doesn't make sense to add 2 notes. It does make sense to add two intervals.
 
+    ;; TODO general height addition and subtraction widget ?
+
     [:h3 "Scale notes"
 
      ]
@@ -284,19 +286,40 @@
     ;; TODO examples of scale notes addition and subtraction.
     ;; hover / (?) button to show this on a cycle representation.
 
-    ;; If you have a good memory, you can simply write the addition and subtraction tables
-    ;; for all 12 scale notes and learn them by heart. They are given below:
-    ;; TODO: scale notes addition and subtraction tables
+    [:p "If you have a good memory, you can simply write the addition and subtraction tables - just like in elementary school -
+    for all 12 scale notes and learn them by heart. They are given below:"]
 
+    (figure "Addition and subtraction tables for scale notes"
+      (m12.widgets.arithmetic/<op-tables>))
 
+    [:p "If you already feel confident with this, you can train with the following exercise:"]
 
-    ;;
-    ;; TODO addition widget
     (figure "Ex S1: General addition of scale notes"
       (gamec/<game-in-rlatom> exS/s1 ::s1 nil
         (fn [_ problem sa correct? submit! next!]
           (exS/<add-scale-notes-view> {} problem sa correct? submit! next!))))
 
+    [:h4 "Counting tricks: the complement"]
+
+    [:p "Personally, I have a very bad memory, so it would be very difficult for me to learn all 248 rows of these tables by heart.
+    Fortunately, there are several mental calculation tricks you can use to avoid remembering everything."]
+
+    [:p "The first one consists of learning the " [:em "complement"] " of each note in the scale.
+    For instance, " [:strong (utk/<note> 3)] " is the complement of " [:strong (utk/<note> 9)] ",
+    because going 3 steps up the scale is like going 9 steps down the scale.
+    Similarly, " [:strong (utk/<note> 7)] " is the complement of " [:strong (utk/<note> 5)] ", "
+     [:strong (utk/<note> 2)] " is the complement of " [:strong (utk/<note> 10)] ", "
+     "and " [:strong (utk/<note> 6)] " is the complement of itself."]
+
+    [:div.text-center
+     [:div [:span.equation (wp/<clrnote> "-3" 0)] "=" (wp/<clrnote> "9" 0)]
+     [:div [:span.equation (wp/<clrnote> "-7" 0)] "=" (wp/<clrnote> "5" 0)]
+     [:div [:span.equation (wp/<clrnote> "-2" 0)] "=" (wp/<clrnote> "a" 0)]
+     [:div [:span.equation (wp/<clrnote> "-6" 0)] "=" (wp/<clrnote> "6" 0)]]
+
+    ;; TODO explanation of why this helps.
+
+    [:p "You can practice with complements here:"]
 
     (figure "Ex S2: Find the complement"
       (gamec/<game-in-rlatom> exS/s2 ::s2 nil
@@ -314,7 +337,8 @@
           (exS/<s3b> {} problem sa correct? submit! next!))))
 
 
-    ;; TODO strong and weak points
+    ;; TODO hard additions (S1a)
+
     ]
 
    [:div

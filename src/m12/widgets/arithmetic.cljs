@@ -85,7 +85,7 @@
         cell-style {:height cell-side :width cell-side
                     :text-align "center"
                     :border "1px solid"}]
-    [:table
+    [:table {:style {:margin "auto"}}
      [:tr
       [:td {:style cell-style} [:strong op-name]]
       (for [n math/all-notes]
@@ -101,10 +101,10 @@
 
 (defc <op-tables> []
   [:div.row
-   [:div.col-md-6
+   [:div.col-md-6.text-center
     [:h4 "Note addition"]
     (<notes-op-table> math/+n "+")]
-   [:div.col-md-6
+   [:div.col-md-6.text-center
     [:h4 "Note substraction"]
     (<notes-op-table> math/-n "-")]])
 
