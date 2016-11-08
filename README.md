@@ -43,7 +43,3 @@ $ ./deploy.sh
 ```
 
 ## TODO
-
-* welcome page - explain experiment
-* abstract out game logic - general component for that. Register exercise.
-* build: cleaning for prod interferes with dev - maybe separate folders.
