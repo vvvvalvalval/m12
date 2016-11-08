@@ -299,7 +299,7 @@
         (fn [_ problem sa correct? submit! next!]
           (exS/<add-scale-notes-view> {} problem sa correct? submit! next!))))
 
-    [:h4 "Counting tricks: the complement"]
+    [:h4 "Counting trick: the complement"]
 
     [:p "Personally, I have a very bad memory, so it would be very difficult for me to learn all 248 rows of these tables by heart.
     Fortunately, there are several mental calculation tricks you can use to avoid remembering everything."]
@@ -326,18 +326,30 @@
         (fn [_ problem sa correct? submit! next!]
           (exS/<add-scale-notes-view> {} problem sa correct? submit! next!))))
 
-    (figure "Ex S3a: the cycle of 4s"
+    [:h4 "Counting trick: the cycles"]
+
+    (figure "Ex S3a: the cycle of 3s"
       (gamec/<game-in-rlatom> exS/s3a ::s3a nil
         (fn [_ problem sa correct? submit! next!]
           (exS/<s3a> {} problem sa correct? submit! next!))))
 
-    (figure "Ex S3b: the cycle of 3s"
+    (figure "Ex S3b: the cycle of 4s"
       (gamec/<game-in-rlatom> exS/s3b ::s3b nil
         (fn [_ problem sa correct? submit! next!]
           (exS/<s3b> {} problem sa correct? submit! next!))))
 
 
-    ;; TODO hard additions (S1a)
+    [:h4 "Practicing harder"]
+
+    [:p "As you may have noticed, some of these calculations are easier than others: for instance, "
+     [:strong "7 + 2"] " or " [:strong "5 - 3"] " are much easier than " [:strong "9 + 2"] ", " [:strong "3 - 6"] " or " [:strong "3 + a"] ",
+     because they're more familiar. Therefore, in order to train efficiently, it's better to focus on the harder ones.
+     This is what the following exercise provies: "]
+
+    (figure "Ex S1a: difficult additions of scale notes"
+      (gamec/<game-in-rlatom> exS/s1a ::s1a nil
+        (fn [_ problem sa correct? submit! next!]
+          (exS/<add-scale-notes-view> {} problem sa correct? submit! next!))))
 
     ]
 

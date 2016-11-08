@@ -66,14 +66,41 @@
 
 ;; ------------------------------------------------------------------------------
 
+(defn random-addition []
+  {:na (rand-nth math/all-notes)
+   :op (rand-nth [:+ :-])
+   :nb (rand-nth math/all-notes)})
+
 (def s1
   "S1: generic addition of scale notes"
   (games/basic-random-game
     {:generate-problem
      (fn [_]
-       {:na (rand-nth math/all-notes)
-        :op (rand-nth [:+ :-])
-        :nb (rand-nth math/all-notes)})
+       (random-addition))
+     :get-the-answer
+     s-get-answer}))
+
+(defn- difficult-addition?
+  [{:as pb :keys [na op nb]}]
+  (or
+    ;; uses a non-decimal digit
+    (>= na 10) (>= nb 10)
+    ;; the result is not the same in Z/12Z and in Z
+    (not=
+      ((case op :+ + :- -) na nb)
+      (s-get-answer pb))
+    ))
+
+(defn hard-random-addition []
+  (->> (repeatedly random-addition)
+    (filter difficult-addition?) first))
+
+(def s1a
+  "S1a: hard additions of scale notes"
+  (games/basic-random-game
+    {:generate-problem
+     (fn [_]
+       (hard-random-addition))
      :get-the-answer
      s-get-answer}))
 
@@ -108,13 +135,6 @@
        :get-the-answer
        s-get-answer})))
 
-(def s3a
-  "S3a: the cycles of 4s."
-  (s3-game 4))
-
-(def s3b
-  "S3b: the cycles of 3s"
-  (s3-game 3))
 
 
 (defc <s3-help>
@@ -160,7 +180,12 @@
          problem answered correct?
          choose! next!)])))
 
-(def ^:private s3a-colors ["#B2FF59" "#69F0AE" "#64FFDA" "#18FFFF"])
+
+(def s3a
+  "S3a: the cycles of 3s"
+  (s3-game 3))
+
+(def ^:private s3a-colors ["#FFFF00" "#FFD740" "#FFCC80"])
 (def ^:private s3a-view (<s3-view> s3a-colors))
 
 (defc <s3a>
@@ -172,7 +197,12 @@
     problem answered correct?
     choose! next!))
 
-(def ^:private s3b-colors ["#FFFF00" "#FFD740" "#FFCC80"])
+
+(def s3b
+  "S3b: the cycles of 4s."
+  (s3-game 4))
+
+(def ^:private s3b-colors ["#B2FF59" "#69F0AE" "#64FFDA" "#18FFFF"])
 (def ^:private s3b-view (<s3-view> s3b-colors))
 
 (defc <s3b>
@@ -183,6 +213,7 @@
   (s3b-view props
     problem answered correct?
     choose! next!))
+
 
 
 

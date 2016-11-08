@@ -32,7 +32,7 @@
   < rum/static
   [h s1 i1 j1 h1 submitted? correct? submit!]
   #_(.log js/console "Rendering cell" i1 j1)
-  [:div.gtr-fretboard-cell-content.gtr-cell-blue-on-hover
+  [:div.gtr-fretboard-cell-content.gtr-cell-blue-on-hover.find-cell-cell
    {:key "content"
     :class (cond
              (and submitted? correct?) "find-cell-cell--right"

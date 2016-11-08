@@ -36,7 +36,7 @@
    (wgt/<fretboard> {}
      {}
      (fn [_ s1 i1 j1 h1]
-       [:div.gtr-fretboard-cell-content.gtr-cell-blue-on-hover
+       [:div.gtr-fretboard-cell-content
         {:key "content"
          :class (if (and (= s s1) (= h h1))
                   "gtr-cell-blue"
