@@ -317,7 +317,25 @@
      [:div [:span.equation (wp/<clrnote> "-2" 0)] "=" (wp/<clrnote> "a" 0)]
      [:div [:span.equation (wp/<clrnote> "-6" 0)] "=" (wp/<clrnote> "6" 0)]]
 
-    ;; TODO explanation of why this helps.
+    [:p "It's musically important to know the complement of each interval, but it's also practical for the M12 notation.
+     You can make many calculations much easier by rewriting them using complements.
+    Here are some examples:"]
+
+    [:div.text-center
+     [:div
+      (wp/<clrnote> "5" 0) (wp/<clrnote> "+ a" 1)
+      "=" (wp/<clrnote> "5" 0) (wp/<clrnote> "- 2" 1)
+      "=" (wp/<clrnote> "3" 0)]
+     [:div
+      (wp/<clrnote> "7" 0) (wp/<clrnote> "- b" 3)
+      "=" (wp/<clrnote> "7" 0) (wp/<clrnote> "+ 1" 3)
+      "=" (wp/<clrnote> "8" 0)]
+     [:div
+      (wp/<clrnote> "8" 0) (wp/<clrnote> "+ 6" 4)
+      "=" (wp/<clrnote> "8" 0) (wp/<clrnote> "- 6" 4)
+      "=" (wp/<clrnote> "2" 0)]
+     ]
+
 
     [:p "You can practice with complements here:"]
 
@@ -328,10 +346,42 @@
 
     [:h4 "Counting trick: the cycles"]
 
+    [:p "The complement trick can get you a long way.
+    Another useful one is noticing that, if you add" (wp/<clrnote> "+3" 0) " repeatedly,
+    you end up with a cycle of 4 notes:"]
+
+    [:div.row
+     [:div.col-md-4
+      [:div.text-center
+       [:div (wp/<clrnote> "0" 0) "+" (wp/<clrnote> "3" 0) "=" (wp/<clrnote> "3" 0)]
+       [:div (wp/<clrnote> "3" 0) "+" (wp/<clrnote> "3" 0) "=" (wp/<clrnote> "6" 0)]
+       [:div (wp/<clrnote> "6" 0) "+" (wp/<clrnote> "3" 0) "=" (wp/<clrnote> "9" 0)]
+       [:div (wp/<clrnote> "9" 0) "+" (wp/<clrnote> "3" 0) "=" (wp/<clrnote> "0" 0)]
+       ]]
+     [:div.col-md-4
+      [:div.text-center
+       [:div (wp/<clrnote> "1" 0) "+" (wp/<clrnote> "3" 0) "=" (wp/<clrnote> "4" 0)]
+       [:div (wp/<clrnote> "4" 0) "+" (wp/<clrnote> "3" 0) "=" (wp/<clrnote> "7" 0)]
+       [:div (wp/<clrnote> "7" 0) "+" (wp/<clrnote> "3" 0) "=" (wp/<clrnote> "a" 0)]
+       [:div (wp/<clrnote> "a" 0) "+" (wp/<clrnote> "3" 0) "=" (wp/<clrnote> "1" 0)]
+       ]]
+     [:div.col-md-4
+      [:div.text-center
+       [:div (wp/<clrnote> "2" 0) "+" (wp/<clrnote> "3" 0) "=" (wp/<clrnote> "5" 0)]
+       [:div (wp/<clrnote> "5" 0) "+" (wp/<clrnote> "3" 0) "=" (wp/<clrnote> "8" 0)]
+       [:div (wp/<clrnote> "8" 0) "+" (wp/<clrnote> "3" 0) "=" (wp/<clrnote> "b" 0)]
+       [:div (wp/<clrnote> "b" 0) "+" (wp/<clrnote> "3" 0) "=" (wp/<clrnote> "2" 0)]
+       ]]]
+
+    [:p "You then realize that these cycles divide the 12 notes in 3 distinct groups,
+    as shown in the exercise below:"]
+
     (figure "Ex S3a: the cycle of 3s"
       (gamec/<game-in-rlatom> exS/s3a ::s3a nil
         (fn [_ problem sa correct? submit! next!]
           (exS/<s3a> {} problem sa correct? submit! next!))))
+
+    [:p "Something similar happens when adding  " (wp/<clrnote> "+4" 0) ":"]
 
     (figure "Ex S3b: the cycle of 4s"
       (gamec/<game-in-rlatom> exS/s3b ::s3b nil
