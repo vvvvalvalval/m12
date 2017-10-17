@@ -1,6 +1,8 @@
 (ns m12.utils
   (:require [rum.core :as rum]
-            [m12.utils.partialfn]))
+            [m12.utils.partialfn]
+            [sc.api]
+            [sc.api.logging]))
 
 (defn toggle-conj
   "Given a set s and an element x, adds x to s if not present, and removes it if present.
@@ -31,3 +33,18 @@
   Useful for creating callbacks that you pass down to rum.core/static components."
   [f & first-args]
   (m12.utils.partialfn/->PartialFn f (vec first-args)))
+
+(sc.api.logging/register-cs-logger
+  ::dummy-logger
+  (fn [cs-data]
+    (binding [*out* (java.io.OutputStreamWriter. System/out)]
+      (sc.api.logging/log-cs "SPY" cs-data))))
+
+(def my-spy-opts
+  `{:sc/spy-cs-logger-id ::dummy-logger})
+
+(defmacro spy
+  ([] (sc.api/spy-emit my-spy-opts nil &env &form))
+  ([expr] (sc.api/spy-emit my-spy-opts expr &env &form))
+  ([opts expr] (sc.api/spy-emit (merge my-spy-opts opts) expr &env &form)))
+

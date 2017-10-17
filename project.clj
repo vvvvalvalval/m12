@@ -20,6 +20,7 @@
                  #_[reagent "0.6.0"]
 
                  [rum "0.10.7"]
+                 [vvvvalvalval/scope-capture "0.1.1"]
                  ]
 
   :plugins [ ;[lein-figwheel "0.5.8"] ;; removed because of the Cursive integration

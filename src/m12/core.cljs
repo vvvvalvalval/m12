@@ -15,10 +15,12 @@
     [m12.lib.games]
     [m12.widgets.games.exG2]
 
-    [m12.pages.welcome])
+    [m12.pages.welcome]
+    [sc.api])
   (:require-macros
     [rum.core :as rum :refer [defc defcs]]
-    [devcards.core :as dc :refer [defcard deftest]]))
+    [devcards.core :as dc :refer [defcard deftest]]
+    [sc.api :refer [spy defsc letsc]]))
 
 (enable-console-print!)
 

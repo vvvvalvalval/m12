@@ -1,7 +1,9 @@
 (ns m12.services.synth
   "Integration with the AudioSynth library.
 
-  NOTE: no volume control.")
+  NOTE: no volume control."
+  (:require [m12.utils :refer-macros [spy]]
+            [sc.api :refer-macros [letsc defsc]]))
 
 ;; ------------------------------------------------------------------------
 ;; AudioSynth
@@ -25,7 +27,11 @@
 
 (defn play-note
   [{:as note, :keys [sound height duration]}]
-  (as-play sound (as-note height) (as-octave height) duration))
+  (as-play sound (spy (as-note height)) (as-octave height) duration))
 
 (defn play [notes]
   (run! play-note notes))
+
+
+
+
