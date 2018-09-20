@@ -9,7 +9,8 @@
     [devcards.core :as dc :refer [defcard deftest]]))
 
 (defn submit-answer [game-state answ]
-  (update game-state :game/state assoc :submitted-answer answ))
+  (-> game-state
+    (update :game/state assoc :submitted-answer answ)))
 
 (defn submit-answer!
   [state-atom answ]
@@ -18,6 +19,7 @@
 (defn next-pb [game-state next-problem config]
   (-> game-state
     (update :game/problem #(next-problem config %))
+    (assoc :game/local-state nil)
     (assoc :game/state {:answered nil})))
 
 (defn next-pb!

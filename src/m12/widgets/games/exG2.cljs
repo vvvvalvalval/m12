@@ -29,9 +29,10 @@
   (let [h0 (* 12 (math/octave-of-height s))]
     (range h0 (+ h0 (* 2 12)))))
 
-(defc <G2>
+(defc <G2-view> < rum/static
   [{:as pb, :keys [s h]} answered
-   correct? submit! next!]
+   correct? submit! next!
+   show-hint? toggle-hint!]
   [:div
    (wgt/<fretboard> {}
      {}
@@ -44,15 +45,27 @@
          }
         (wgt/<fretboard-column-help> i1 j1)]
        ))
+   [:div.text-center
+    [:p
+     (when show-hint?
+       [:span
+        [:strong "Hint: "]
+        (utk/<height> s) " + " [:span {:style {:font-style "italic"}} (utk/<height> (- h s))]
+        " = "
+        (utk/<height> h)])
+     [:button.btn.btn-link
+      {:on-click
+       (fn [_]
+         (toggle-hint!))}
+      [:small (if show-hint? "Hide hint" "Show hint")]]]]
    (utk/<height-picker> {}
      {:f-props (fn [props h1]
                  (update props :class
                    #(cond-> %
-                     (and (= h1 answered))
-                     (str " " (if correct? "btn-success" "btn-danger")))))}
+                      (and (= h1 answered))
+                      (str " " (if correct? "btn-success" "btn-danger")))))}
      submit!
      (answers-range pb))
-
    [:div.text-center
     (cond
       correct? [:p "Well played!"
@@ -61,14 +74,29 @@
       :else [:p " "])]
    ])
 
+(defn- toggle-show-hint!
+  [local-state-atom]
+  (swap! local-state-atom update :game/show-hint? not))
+
+(defc <G2> < rum/static rum/reactive
+  [local-state-atom
+   pb answered
+   correct? submit! next!]
+  (let [{show-hint? :game/show-hint?} (rum/react local-state-atom)
+        toggle-hint! (u/pfn toggle-show-hint! local-state-atom)]
+    (<G2-view>
+      pb answered
+      correct? submit! next!
+      show-hint? toggle-hint!)))
+
 (defcard <G2>-failed
   (let [s (nth (gtr/standard-guitar-strings) 3)
         h (+ s 7)]
-    (<G2> {:s s :h h}
+    (<G2> (atom nil) {:s s :h h}
       (+ h 1) false #(.log js/console "submitted:" %) #(.log js/console "next!"))))
 
 (defcard <G2>-success
   (let [s (nth (gtr/standard-guitar-strings) 3)
         h (+ s 7)]
-    (<G2> {:s s :h h}
+    (<G2> (atom nil) {:s s :h h}
       h true #(.log js/console "submitted:" %) #(.log js/console "next!"))))

@@ -534,13 +534,13 @@
     ;; TODO config UI for set of strings and change notation
     (figure "Ex G1: find where to play the note on the tab."
       (gamec/<game-in-rlatom> exG1/g1 ::G1 nil
-        (fn [_ problem sa correct? submit! next!]
-          (exG1/<G1> problem sa correct? submit! next!))))
+        (fn [local-state-atom problem sa correct? submit! next!]
+          (exG1/<G1> local-state-atom problem sa correct? submit! next!))))
 
     (figure "Ex G2: name the note played on the fretboard."
       (gamec/<game-in-rlatom> exG2/g2 ::G2 nil
-        (fn [_ problem sa correct? submit! next!]
-          (exG2/<G2> problem sa correct? submit! next!))))
+        (fn [local-state-atom problem sa correct? submit! next!]
+          (exG2/<G2> local-state-atom problem sa correct? submit! next!))))
 
     ;; TODO play based on tab
     ;; TODO adding exercise based on

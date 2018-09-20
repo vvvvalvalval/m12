@@ -50,9 +50,10 @@
     (reduce (fn [m [i s]]
               (assoc m s i)) {})))
 
-(defc <G1> < rum/static
+(defc <G1>--view < rum/static
   [{:as pb, :keys [s h]} answered
-   correct? submit! next!]
+   correct? submit! next!
+   show-hint? toggle-hint!]
   [:div
    [:div.row
     [:div.col-sm-3.col-md-2
@@ -84,6 +85,19 @@
            (<G1-cell> h s1 i1 j1 h1 submitted? correct? submit!))))
      ]]
    [:div.text-center
+    [:p
+     (when show-hint?
+       [:span
+        [:strong "Hint: "]
+        (utk/<height> h) " - " (utk/<height> s)
+        " = "
+        [:span {:style {:font-style "italic"}} "+" (utk/<height> (- h s))]])
+     [:button.btn.btn-link
+      {:on-click
+       (fn [_]
+         (toggle-hint!))}
+      [:small (if show-hint? "Hide hint" "Show hint")]]]]
+   [:div.text-center
     (cond
       correct? [:p "Well played!"
                 (utk/<next-btn> {} next!)]
@@ -92,11 +106,29 @@
                                (not= s s1) "Dude! that's not even the right string!"
                                :else "Nope, try again.")]
                          )
-      :else [:p " "])]
+      :else
+      [:p " "])]
    ])
 
+(defn- toggle-show-hint!
+  [local-state-atom]
+  (swap! local-state-atom update :game/show-hint? not))
+
+(defc <G1> < rum/static rum/reactive
+  [local-state-atom
+   pb answered
+   correct? submit! next!]
+  (let [{show-hint? :game/show-hint?} (rum/react local-state-atom)
+        toggle-hint! (u/pfn toggle-show-hint! local-state-atom)]
+    (<G1>--view
+      pb answered
+      correct? submit! next!
+      show-hint? toggle-hint!)))
+
 (defcard <G1>-ex
-  (<G1> (let [s (nth (gtr/standard-guitar-strings) 3)
+  (<G1>
+    (atom nil)
+    (let [s (nth (gtr/standard-guitar-strings) 3)
               h (+ s 7)]
           {:s s :h h})
     nil nil #(do nil) #(do nil)))
