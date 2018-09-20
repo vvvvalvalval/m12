@@ -148,7 +148,7 @@
   < rum/static
   [props selected-notation select!]
   [:span.btn-group props
-   (for [[nt nt-name] [[:m12 "M12"]
+   (for [[nt nt-name] [[:m12 "Dozenal"]
                        [:solfege "solfège"]
                        [:letter "letter"]
                        ]]

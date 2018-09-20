@@ -16,7 +16,7 @@
    [:thead
     (into
       [:tr
-       [:th "M12 notation"]
+       [:th "Dozenal notation"]
        [:th "Solfege notation"]
        [:th "English notation"]
        ]
@@ -80,7 +80,7 @@
      ]]])
 
 (defcard <translator>
-  "Lets you translate interactively to/from M12 notation and usual notations."
+  "Lets you translate interactively to/from Dozenal notation and usual notations."
   (<translator>))
 
 

@@ -27,7 +27,7 @@
 
 (defn play-note
   [{:as note, :keys [sound height duration]}]
-  (as-play sound (spy (as-note height)) (as-octave height) duration))
+  (as-play sound (as-note height) (as-octave height) duration))
 
 (defn play [notes]
   (run! play-note notes))
