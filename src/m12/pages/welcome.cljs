@@ -119,6 +119,8 @@
   []
   [:div.container
    [:h1.text-center "A dozenal notation for western music"]
+   [:div.text-center
+    [:small [:a {:href "https://github.com/vvvvalvalval/m12" :target "_blank"} "Source code"]]]
    [:div {:style {:margin "40px auto"
                   :max-width "600px"}}
     (m12.widgets.piano-widgets/<piano-scale-comparison>
